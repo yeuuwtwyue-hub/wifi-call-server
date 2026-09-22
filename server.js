@@ -1,48 +1,104 @@
-import { WebSocketServer } from "ws";
+import http from "node:http";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import { WebSocketServer, WebSocket } from "ws";
 
-const port = process.env.PORT || 3000;
-const wss = new WebSocketServer({ port });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const PORT = process.env.PORT || 3000;
+
+const server = http.createServer((req, res) => {
+  if (req.url === "/" || req.url === "/index.html") {
+    const file = path.join(__dirname, "public", "index.html");
+
+    fs.readFile(file, (err, data) => {
+      if (err) {
+        res.writeHead(500);
+        res.end("Cannot load app");
+        return;
+      }
+
+      res.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8"
+      });
+      res.end(data);
+    });
+
+    return;
+  }
+
+  res.writeHead(404);
+  res.end("Not Found");
+});
+
+const wss = new WebSocketServer({ server });
 const rooms = new Map();
 
-function sendToOthers(room, sender, message) {
-  const peers = rooms.get(room) || new Set();
-  for (const peer of peers) {
-    if (peer !== sender && peer.readyState === 1) {
-      peer.send(message);
-    }
-  }
-}
+wss.on("connection", (socket) => {
+  socket.on("message", (data) => {
+    let message;
 
-wss.on("connection", (ws) => {
-  let room = null;
-
-  ws.on("message", (raw) => {
-    let msg;
     try {
-      msg = JSON.parse(raw.toString());
+      message = JSON.parse(data.toString());
     } catch {
       return;
     }
 
-    if (msg.type === "join") {
-      room = String(msg.room || "").trim();
-      if (!room) return;
+    if (message.type === "join") {
+      socket.room = message.room;
 
-      if (!rooms.has(room)) rooms.set(room, new Set());
-      rooms.get(room).add(ws);
+      if (!rooms.has(socket.room)) {
+        rooms.set(socket.room, new Set());
+      }
 
-      ws.send(JSON.stringify({ type: "joined", room }));
+      const room = rooms.get(socket.room);
+
+      for (const peer of room) {
+        if (peer.readyState === WebSocket.OPEN) {
+          peer.send(JSON.stringify({
+            type: "peer-joined"
+          }));
+        }
+      }
+
+      room.add(socket);
       return;
     }
 
-    if (room) sendToOthers(room, ws, raw.toString());
+    const room = rooms.get(socket.room);
+    if (!room) return;
+
+    for (const peer of room) {
+      if (
+        peer !== socket &&
+        peer.readyState === WebSocket.OPEN
+      ) {
+        peer.send(data.toString());
+      }
+    }
   });
 
-  ws.on("close", () => {
-    if (!room || !rooms.has(room)) return;
-    rooms.get(room).delete(ws);
-    if (rooms.get(room).size === 0) rooms.delete(room);
+  socket.on("close", () => {
+    const room = rooms.get(socket.room);
+    if (!room) return;
+
+    room.delete(socket);
+
+    for (const peer of room) {
+      if (peer.readyState === WebSocket.OPEN) {
+        peer.send(JSON.stringify({
+          type: "peer-left"
+        }));
+      }
+    }
+
+    if (room.size === 0) {
+      rooms.delete(socket.room);
+    }
   });
 });
 
-console.log(`WiFi Call signaling server listening on port ${port}`);
+server.listen(PORT, () => {
+  console.log(`WiFi Call server running on port ${PORT}`);
+});
