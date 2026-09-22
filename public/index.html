@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>WiFi Call</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:#10131a;
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
+.card{
+  width:92%;
+  max-width:420px;
+  padding:28px;
+  border-radius:24px;
+  background:#191e28;
+  text-align:center;
+  box-shadow:0 15px 50px #0008;
+}
+
+h1{
+  margin:0 0 8px;
+  font-size:30px;
+}
+
+.sub{
+  color:#aeb7c6;
+  margin-bottom:24px;
+}
+
+input{
+  width:100%;
+  padding:15px;
+  margin-bottom:12px;
+  border:1px solid #394252;
+  border-radius:13px;
+  background:#0e1117;
+  color:white;
+  font-size:17px;
+}
+
+button{
+  border:0;
+  border-radius:13px;
+  padding:14px 18px;
+  margin:5px;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.join{
+  width:100%;
+  background:#2f8cff;
+  color:white;
+}
+
+.mic{
+  background:#303744;
+  color:white;
+}
+
+.hang{
+  background:#e5484d;
+  color:white;
+}
+
+button:disabled{
+  opacity:.45;
+}
+
+#status{
+  min-height:22px;
+  margin:18px 0;
+  color:#72e6a1;
+}
+
+.small{
+  margin-top:20px;
+  color:#8791a2;
+  font-size:12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>📞 WiFi Call</h1>
+
+<div class="sub">
+Gọi thoại giữa 2 điện thoại
+</div>
+
+<input
+id="room"
+placeholder="Nhập mã phòng, ví dụ 1234"
+maxlength="30">
+
+<button class="join" id="join">
+Tham gia phòng
+</button>
+
+<div id="status">
+Chưa kết nối
+</div>
+
+<button class="mic" id="mic" disabled>
+🎙️ Tắt mic
+</button>
+
+<button class="hang" id="hang" disabled>
+🔴 Kết thúc
+</button>
+
+<div class="small">
+Server: wifi-call-server-1.onrender.com
+</div>
+
+</div>
+
+<script>
+
+const SERVER =
+"https://wifi-call-server-1.onrender.com";
+
+let ws;
+let pc;
+let stream;
+let room;
+
+const $ = id =>
+document.getElementById(id);
+
+function status(text){
+  $("status").textContent = text;
+}
+
+function signal(message){
+
+  if(ws && ws.readyState === 1){
+    ws.send(JSON.stringify(message));
+  }
+
+}
+
+$("join").onclick = async () => {
+
+  room = $("room").value.trim();
+
+  if(!room){
+    status("⚠️ Hãy nhập mã phòng");
+    return;
+  }
+
+  try{
+
+    stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio:true,
+        video:false
+      });
+
+  }catch(error){
+
+    status("⚠️ Hãy cho phép dùng micro");
+    return;
+
+  }
+
+  const wsUrl =
+    SERVER.replace(/^http/,"ws");
+
+  ws =
+    new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+
+    signal({
+      type:"join",
+      room:room
+    });
+
+    status(
+      "🟢 Đã vào phòng, chờ người kia..."
+    );
+
+    $("join").disabled = true;
+    $("room").disabled = true;
+    $("mic").disabled = false;
+    $("hang").disabled = false;
+
+  };
+
+  ws.onmessage = async event => {
+
+    const message =
+      JSON.parse(event.data);
+
+    if(message.type === "offer"){
+
+      await makePC();
+
+      await pc.setRemoteDescription(
+        message.offer
+      );
+
+      const answer =
+        await pc.createAnswer();
+
+      await pc.setLocalDescription(answer);
+
+      signal({
+        type:"answer",
+        room:room,
+        answer:answer
+      });
+
+    }
+
+    else if(message.type === "answer"){
+
+      await pc.setRemoteDescription(
+        message.answer
+      );
+
+    }
+
+    else if(
+      message.type === "candidate" &&
+      pc
+    ){
+
+      try{
+
+        await pc.addIceCandidate(
+          message.candidate
+        );
+
+      }catch(error){}
+
+    }
+
+    else if(
+      message.type === "peer-joined"
+    ){
+
+      await makePC();
+
+      const offer =
+        await pc.createOffer();
+
+      await pc.setLocalDescription(
+        offer
+      );
+
+      signal({
+        type:"offer",
+        room:room,
+        offer:offer
+      });
+
+    }
+
+    else if(
+      message.type === "peer-left"
+    ){
+
+      status(
+        "☎️ Người kia đã rời phòng"
+      );
+
+    }
+
+  };
+
+  ws.onerror = () => {
+
+    status(
+      "❌ Không kết nối được server"
+    );
+
+  };
+
+};
+
+async function makePC(){
+
+  if(pc) return;
+
+  pc =
+    new RTCPeerConnection({
+
+      iceServers:[
+        {
+          urls:
+          "stun:stun.l.google.com:19302"
+        }
+      ]
+
+    });
+
+  stream
+    .getTracks()
+    .forEach(track => {
+
+      pc.addTrack(
+        track,
+        stream
+      );
+
+    });
+
+  pc.onicecandidate = event => {
+
+    if(event.candidate){
+
+      signal({
+
+        type:"candidate",
+        room:room,
+        candidate:event.candidate
+
+      });
+
+    }
+
+  };
+
+  pc.ontrack = event => {
+
+    let audio =
+      document.getElementById("remote");
+
+    if(!audio){
+
+      audio =
+        document.createElement("audio");
+
+      audio.id = "remote";
+      audio.autoplay = true;
+
+      document.body.appendChild(audio);
+
+    }
+
+    audio.srcObject =
+      event.streams[0];
+
+  };
+
+  pc.onconnectionstatechange = () => {
+
+    if(
+      pc.connectionState ===
+      "connected"
+    ){
+
+      status(
+        "📞 Đang gọi"
+      );
+
+    }
+
+  };
+
+}
+
+$("mic").onclick = () => {
+
+  if(!stream) return;
+
+  const track =
+    stream.getAudioTracks()[0];
+
+  track.enabled =
+    !track.enabled;
+
+  $("mic").textContent =
+    track.enabled
+    ? "🎙️ Tắt mic"
+    : "🔇 Bật mic";
+
+};
+
+$("hang").onclick = () => {
+
+  if(stream){
+
+    stream
+      .getTracks()
+      .forEach(track =>
+        track.stop()
+      );
+
+  }
+
+  if(pc){
+    pc.close();
+  }
+
+  if(ws){
+    ws.close();
+  }
+
+  pc = null;
+  ws = null;
+
+  $("join").disabled = false;
+  $("room").disabled = false;
+  $("mic").disabled = true;
+  $("hang").disabled = true;
+
+  status(
+    "☎️ Đã kết thúc cuộc gọi"
+  );
+
+};
+
+</script>
+
+</body>
+  </html>
