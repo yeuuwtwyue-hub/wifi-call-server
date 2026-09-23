@@ -23,43 +23,42 @@ function saveData(data) {
 }
 
 function hashPassword(password) {
-  return crypto
-    .createHash("sha256")
-    .update(password)
-    .digest("hex");
+  return crypto.createHash("sha256").update(password).digest("hex");
 }
 
 const server = http.createServer((req, res) => {
-  if (req.url === "/" || req.url === "/index.html") {
-    const file = path.join(__dirname, "public", "index.html");
+  let url = req.url.split("?")[0];
 
-    fs.readFile(file, (err, data) => {
-      if (err) {
-        res.writeHead(500);
-        res.end("Cannot load app");
-        return;
-      }
-
-      res.writeHead(200, {
-        "Content-Type": "text/html; charset=utf-8"
-      });
-
-      res.end(data);
-    });
-
-    return;
+  if (url === "/") {
+    url = "/index.html";
   }
 
-  res.writeHead(404);
-  res.end("Not Found");
+  const filePath = path.join(__dirname, "public", url);
+
+  if (!filePath.startsWith(path.join(__dirname, "public"))) {
+    res.writeHead(403);
+    return res.end("Forbidden");
+  }
+
+  fs.readFile(filePath, (err, data) => {
+    if (err) {
+      res.writeHead(404);
+      return res.end("Not Found");
+    }
+
+    res.writeHead(200, {
+      "Content-Type": "text/html; charset=utf-8"
+    });
+
+    res.end(data);
+  });
 });
 
 const wss = new WebSocketServer({ server });
 const rooms = new Map();
 
-wss.on("connection", (socket) => {
-
-  socket.on("message", (data) => {
+wss.on("connection", socket => {
+  socket.on("message", data => {
     let message;
 
     try {
@@ -68,80 +67,6 @@ wss.on("connection", (socket) => {
       return;
     }
 
-    // Đăng ký
-    if (message.type === "register") {
-      const db = loadData();
-
-      if (!message.username || !message.password) {
-        socket.send(JSON.stringify({
-          type: "register-result",
-          success: false,
-          message: "Thiếu tên đăng nhập hoặc mật khẩu"
-        }));
-        return;
-      }
-
-      const exists = db.users.find(
-        u => u.username === message.username
-      );
-
-      if (exists) {
-        socket.send(JSON.stringify({
-          type: "register-result",
-          success: false,
-          message: "Tên đăng nhập đã tồn tại"
-        }));
-        return;
-      }
-
-      db.users.push({
-        id: crypto.randomUUID(),
-        username: message.username,
-        password: hashPassword(message.password)
-      });
-
-      saveData(db);
-
-      socket.send(JSON.stringify({
-        type: "register-result",
-        success: true,
-        message: "Đăng ký thành công"
-      }));
-
-      return;
-    }
-
-    // Đăng nhập
-    if (message.type === "login") {
-      const db = loadData();
-
-      const user = db.users.find(
-        u =>
-          u.username === message.username &&
-          u.password === hashPassword(message.password)
-      );
-
-      if (!user) {
-        socket.send(JSON.stringify({
-          type: "login-result",
-          success: false,
-          message: "Sai tài khoản hoặc mật khẩu"
-        }));
-        return;
-      }
-
-      socket.user = user.username;
-
-      socket.send(JSON.stringify({
-        type: "login-result",
-        success: true,
-        username: user.username
-      }));
-
-      return;
-    }
-
-    // Vào phòng gọi
     if (message.type === "join") {
       socket.room = message.room;
 
@@ -153,9 +78,7 @@ wss.on("connection", (socket) => {
 
       for (const peer of room) {
         if (peer.readyState === WebSocket.OPEN) {
-          peer.send(JSON.stringify({
-            type: "peer-joined"
-          }));
+          peer.send(JSON.stringify({ type: "peer-joined" }));
         }
       }
 
@@ -163,46 +86,12 @@ wss.on("connection", (socket) => {
       return;
     }
 
-    // Tin nhắn chat
-    if (message.type === "chat") {
-      const db = loadData();
-
-      const chatMessage = {
-        id: crypto.randomUUID(),
-        from: socket.user || "Khách",
-        text: message.text,
-        time: Date.now()
-      };
-
-      db.messages.push(chatMessage);
-      saveData(db);
-
-      const room = rooms.get(socket.room);
-
-      if (room) {
-        for (const peer of room) {
-          if (peer.readyState === WebSocket.OPEN) {
-            peer.send(JSON.stringify({
-              type: "chat",
-              message: chatMessage
-            }));
-          }
-        }
-      }
-
-      return;
-    }
-
-    // Chuyển tiếp WebRTC
     const room = rooms.get(socket.room);
 
     if (!room) return;
 
     for (const peer of room) {
-      if (
-        peer !== socket &&
-        peer.readyState === WebSocket.OPEN
-      ) {
+      if (peer !== socket && peer.readyState === WebSocket.OPEN) {
         peer.send(data.toString());
       }
     }
@@ -217,9 +106,7 @@ wss.on("connection", (socket) => {
 
     for (const peer of room) {
       if (peer.readyState === WebSocket.OPEN) {
-        peer.send(JSON.stringify({
-          type: "peer-left"
-        }));
+        peer.send(JSON.stringify({ type: "peer-left" }));
       }
     }
 
