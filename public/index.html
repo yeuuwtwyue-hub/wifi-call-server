@@ -3,180 +3,491 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>WiFi Call</title>
+<title>Việt Call</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
+*{box-sizing:border-box}
 
 body{
   margin:0;
   min-height:100vh;
+  background:#0b0f17;
+  color:white;
+  font-family:Arial,sans-serif;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:#10131a;
-  color:white;
-  font-family:Arial,sans-serif;
 }
 
-.card{
-  width:92%;
-  max-width:420px;
-  padding:28px;
+.app{
+  width:94%;
+  max-width:430px;
+  background:#151b26;
   border-radius:24px;
-  background:#191e28;
-  text-align:center;
-  box-shadow:0 15px 50px #0008;
+  padding:24px;
+  box-shadow:0 15px 50px #0009;
 }
 
 h1{
+  text-align:center;
   margin:0 0 8px;
-  font-size:30px;
 }
 
 .sub{
-  color:#aeb7c6;
+  text-align:center;
+  color:#8f9aaa;
   margin-bottom:24px;
 }
 
 input{
   width:100%;
   padding:15px;
-  margin-bottom:12px;
-  border:1px solid #394252;
+  margin:7px 0;
+  border:1px solid #303949;
   border-radius:13px;
-  background:#0e1117;
+  background:#0d121b;
   color:white;
-  font-size:17px;
+  font-size:16px;
 }
 
 button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
   border:0;
   border-radius:13px;
-  padding:14px 18px;
-  margin:5px;
   font-size:16px;
   font-weight:bold;
-}
-
-.join{
-  width:100%;
-  background:#2f8cff;
   color:white;
-}
-
-.mic{
-  background:#303744;
-  color:white;
-}
-
-.hang{
-  background:#e5484d;
-  color:white;
+  background:#287cff;
 }
 
 button:disabled{
   opacity:.45;
 }
 
-#status{
+.secondary{
+  background:#303846;
+}
+
+.danger{
+  background:#e5484d;
+}
+
+#message{
   min-height:22px;
-  margin:18px 0;
-  color:#72e6a1;
+  text-align:center;
+  margin:15px 0;
+  color:#70e6a0;
+}
+
+.page{
+  display:none;
+}
+
+.page.active{
+  display:block;
+}
+
+.user{
+  text-align:center;
+  color:#70e6a0;
+  margin-bottom:20px;
+}
+
+.callBox{
+  margin-top:20px;
+  padding-top:20px;
+  border-top:1px solid #303949;
+}
+
+#callStatus{
+  text-align:center;
+  color:#aeb7c6;
+  margin:15px 0;
+}
+
+.hidden{
+  display:none;
 }
 
 .small{
-  margin-top:20px;
-  color:#8791a2;
+  text-align:center;
+  color:#697486;
   font-size:12px;
+  margin-top:20px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="card">
+<div class="app">
 
-<h1>📞 WiFi Call</h1>
+<!-- ĐĂNG NHẬP -->
+<div id="loginPage" class="page active">
+
+<h1>📞 Việt Call</h1>
 
 <div class="sub">
-Gọi thoại giữa 2 điện thoại
+Đăng nhập tài khoản
+</div>
+
+<input id="loginUser" placeholder="Tên đăng nhập">
+
+<input
+id="loginPass"
+type="password"
+placeholder="Mật khẩu">
+
+<button id="loginBtn">
+🔑 Đăng nhập
+</button>
+
+<button class="secondary" id="showRegister">
+📝 Tạo tài khoản
+</button>
+
+</div>
+
+
+<!-- ĐĂNG KÝ -->
+<div id="registerPage" class="page">
+
+<h1>📝 Đăng ký</h1>
+
+<div class="sub">
+Tạo tài khoản Việt Call
+</div>
+
+<input id="registerUser" placeholder="Tên đăng nhập">
+
+<input
+id="registerPass"
+type="password"
+placeholder="Mật khẩu">
+
+<button id="registerBtn">
+✅ Đăng ký
+</button>
+
+<button class="secondary" id="showLogin">
+⬅️ Quay lại đăng nhập
+</button>
+
+</div>
+
+
+<!-- TRANG CHÍNH -->
+<div id="homePage" class="page">
+
+<h1>💬 Việt Call</h1>
+
+<div class="user">
+Xin chào, <span id="username"></span>
 </div>
 
 <input
 id="room"
-placeholder="Nhập mã phòng, ví dụ 1234"
+placeholder="Mã phòng, ví dụ 1234"
 maxlength="30">
 
-<button class="join" id="join">
-Tham gia phòng
+<button id="join">
+📞 Tham gia phòng
 </button>
 
-<div id="status">
+<div id="callBox" class="callBox hidden">
+
+<div id="callStatus">
 Chưa kết nối
 </div>
 
-<button class="mic" id="mic" disabled>
+<button
+class="secondary"
+id="mic"
+disabled>
 🎙️ Tắt mic
 </button>
 
-<button class="hang" id="hang" disabled>
+<button
+class="danger"
+id="hang"
+disabled>
 🔴 Kết thúc
 </button>
 
+</div>
+
+<button
+class="secondary"
+id="logout">
+🚪 Đăng xuất
+</button>
+
 <div class="small">
-Server: wifi-call-server-1.onrender.com
+Việt Call • Voice Calling
 </div>
 
 </div>
+
+<div id="message"></div>
+
+</div>
+
 
 <script>
 
 const SERVER =
 "https://wifi-call-server-1.onrender.com";
 
-let ws;
-let pc;
-let stream;
-let room;
+let ws = null;
+let pc = null;
+let stream = null;
+let room = null;
+let currentUser = null;
 
 const $ = id =>
 document.getElementById(id);
 
-function status(text){
-  $("status").textContent = text;
+
+function showPage(id){
+
+  document.querySelectorAll(".page")
+    .forEach(page =>
+      page.classList.remove("active")
+    );
+
+  $(id).classList.add("active");
+
 }
 
-function signal(message){
 
-  if(ws && ws.readyState === 1){
-    ws.send(JSON.stringify(message));
+function message(text,color){
+
+  $("message").textContent = text;
+
+  if(color){
+    $("message").style.color = color;
   }
 
 }
 
+
+/* =========================
+   ĐĂNG KÝ
+========================= */
+
+$("showRegister").onclick = () => {
+
+  message("");
+
+  showPage("registerPage");
+
+};
+
+
+$("showLogin").onclick = () => {
+
+  message("");
+
+  showPage("loginPage");
+
+};
+
+
+$("registerBtn").onclick = () => {
+
+  const username =
+    $("registerUser").value.trim();
+
+  const password =
+    $("registerPass").value;
+
+  if(!username || !password){
+
+    message(
+      "⚠️ Nhập đầy đủ thông tin",
+      "#ffcc66"
+    );
+
+    return;
+  }
+
+  const socket =
+    new WebSocket(
+      SERVER.replace(/^http/,"ws")
+    );
+
+  socket.onopen = () => {
+
+    socket.send(JSON.stringify({
+      type:"register",
+      username,
+      password
+    }));
+
+  };
+
+  socket.onmessage = event => {
+
+    const data =
+      JSON.parse(event.data);
+
+    if(data.type === "register-result"){
+
+      message(
+        data.message,
+        data.success
+          ? "#70e6a0"
+          : "#ff7777"
+      );
+
+      if(data.success){
+
+        $("registerUser").value = "";
+        $("registerPass").value = "";
+
+        setTimeout(() => {
+          showPage("loginPage");
+        },700);
+
+      }
+
+      socket.close();
+
+    }
+
+  };
+
+};
+
+
+/* =========================
+   ĐĂNG NHẬP
+========================= */
+
+$("loginBtn").onclick = () => {
+
+  const username =
+    $("loginUser").value.trim();
+
+  const password =
+    $("loginPass").value;
+
+  if(!username || !password){
+
+    message(
+      "⚠️ Nhập tài khoản và mật khẩu",
+      "#ffcc66"
+    );
+
+    return;
+  }
+
+  const socket =
+    new WebSocket(
+      SERVER.replace(/^http/,"ws")
+    );
+
+  socket.onopen = () => {
+
+    socket.send(JSON.stringify({
+      type:"login",
+      username,
+      password
+    }));
+
+  };
+
+  socket.onmessage = event => {
+
+    const data =
+      JSON.parse(event.data);
+
+    if(data.type === "login-result"){
+
+      if(data.success){
+
+        currentUser =
+          data.username;
+
+        $("username").textContent =
+          currentUser;
+
+        $("loginUser").value = "";
+        $("loginPass").value = "";
+
+        message("");
+
+        showPage("homePage");
+
+      }else{
+
+        message(
+          data.message,
+          "#ff7777"
+        );
+
+      }
+
+      socket.close();
+
+    }
+
+  };
+
+};
+
+
+/* =========================
+   GỌI ĐIỆN
+========================= */
+
+function signal(data){
+
+  if(
+    ws &&
+    ws.readyState === WebSocket.OPEN
+  ){
+
+    ws.send(JSON.stringify(data));
+
+  }
+
+}
+
+
 $("join").onclick = async () => {
 
-  room = $("room").value.trim();
+  room =
+    $("room").value.trim();
 
   if(!room){
-    status("⚠️ Hãy nhập mã phòng");
+
+    message(
+      "⚠️ Nhập mã phòng",
+      "#ffcc66"
+    );
+
     return;
   }
 
   try{
 
     stream =
-      await navigator.mediaDevices.getUserMedia({
+      await navigator.mediaDevices
+      .getUserMedia({
         audio:true,
         video:false
       });
 
   }catch(error){
 
-    status("⚠️ Hãy cho phép dùng micro");
+    message(
+      "⚠️ Hãy cho phép sử dụng micro",
+      "#ff7777"
+    );
+
     return;
 
   }
@@ -187,28 +498,34 @@ $("join").onclick = async () => {
   ws =
     new WebSocket(wsUrl);
 
+
   ws.onopen = () => {
 
     signal({
       type:"join",
-      room:room
+      room
     });
 
-    status(
-      "🟢 Đã vào phòng, chờ người kia..."
-    );
+    $("callBox")
+      .classList.remove("hidden");
 
     $("join").disabled = true;
     $("room").disabled = true;
+
     $("mic").disabled = false;
     $("hang").disabled = false;
 
+    $("callStatus").textContent =
+      "🟢 Đã vào phòng, chờ người kia...";
+
   };
+
 
   ws.onmessage = async event => {
 
     const message =
       JSON.parse(event.data);
+
 
     if(message.type === "offer"){
 
@@ -221,23 +538,31 @@ $("join").onclick = async () => {
       const answer =
         await pc.createAnswer();
 
-      await pc.setLocalDescription(answer);
+      await pc.setLocalDescription(
+        answer
+      );
 
       signal({
         type:"answer",
-        room:room,
-        answer:answer
+        room,
+        answer
       });
 
     }
 
+
     else if(message.type === "answer"){
 
-      await pc.setRemoteDescription(
-        message.answer
-      );
+      if(pc){
+
+        await pc.setRemoteDescription(
+          message.answer
+        );
+
+      }
 
     }
+
 
     else if(
       message.type === "candidate" &&
@@ -254,9 +579,8 @@ $("join").onclick = async () => {
 
     }
 
-    else if(
-      message.type === "peer-joined"
-    ){
+
+    else if(message.type === "peer-joined"){
 
       await makePC();
 
@@ -269,37 +593,37 @@ $("join").onclick = async () => {
 
       signal({
         type:"offer",
-        room:room,
-        offer:offer
+        room,
+        offer
       });
 
     }
 
-    else if(
-      message.type === "peer-left"
-    ){
 
-      status(
-        "☎️ Người kia đã rời phòng"
-      );
+    else if(message.type === "peer-left"){
+
+      $("callStatus").textContent =
+        "☎️ Người kia đã rời phòng";
 
     }
 
   };
 
+
   ws.onerror = () => {
 
-    status(
-      "❌ Không kết nối được server"
-    );
+    $("callStatus").textContent =
+      "❌ Không kết nối được server";
 
   };
 
 };
 
+
 async function makePC(){
 
   if(pc) return;
+
 
   pc =
     new RTCPeerConnection({
@@ -313,6 +637,7 @@ async function makePC(){
 
     });
 
+
   stream
     .getTracks()
     .forEach(track => {
@@ -324,60 +649,73 @@ async function makePC(){
 
     });
 
-  pc.onicecandidate = event => {
 
-    if(event.candidate){
+  pc.onicecandidate =
+    event => {
 
-      signal({
+      if(event.candidate){
 
-        type:"candidate",
-        room:room,
-        candidate:event.candidate
+        signal({
 
-      });
+          type:"candidate",
+          room,
+          candidate:
+            event.candidate
 
-    }
+        });
 
-  };
+      }
 
-  pc.ontrack = event => {
+    };
 
-    let audio =
-      document.getElementById("remote");
 
-    if(!audio){
+  pc.ontrack =
+    event => {
 
-      audio =
-        document.createElement("audio");
+      let audio =
+        document.getElementById("remote");
 
-      audio.id = "remote";
-      audio.autoplay = true;
+      if(!audio){
 
-      document.body.appendChild(audio);
+        audio =
+          document.createElement("audio");
 
-    }
+        audio.id = "remote";
+        audio.autoplay = true;
 
-    audio.srcObject =
-      event.streams[0];
+        document.body
+          .appendChild(audio);
 
-  };
+      }
 
-  pc.onconnectionstatechange = () => {
+      audio.srcObject =
+        event.streams[0];
 
-    if(
-      pc.connectionState ===
-      "connected"
-    ){
+    };
 
-      status(
-        "📞 Đang gọi"
-      );
 
-    }
+  pc.onconnectionstatechange =
+    () => {
 
-  };
+      if(
+        pc.connectionState ===
+        "connected"
+      ){
+
+        $("callStatus")
+          .textContent =
+          "📞 Đang gọi";
+
+      }
+
+    };
 
 }
+
+
+/* =========================
+   MICRO
+========================= */
 
 $("mic").onclick = () => {
 
@@ -391,10 +729,15 @@ $("mic").onclick = () => {
 
   $("mic").textContent =
     track.enabled
-    ? "🎙️ Tắt mic"
-    : "🔇 Bật mic";
+      ? "🎙️ Tắt mic"
+      : "🔇 Bật mic";
 
 };
+
+
+/* =========================
+   KẾT THÚC
+========================= */
 
 $("hang").onclick = () => {
 
@@ -409,28 +752,49 @@ $("hang").onclick = () => {
   }
 
   if(pc){
+
     pc.close();
+    pc = null;
+
   }
 
   if(ws){
-    ws.close();
-  }
 
-  pc = null;
-  ws = null;
+    ws.close();
+    ws = null;
+
+  }
 
   $("join").disabled = false;
   $("room").disabled = false;
+
   $("mic").disabled = true;
   $("hang").disabled = true;
 
-  status(
-    "☎️ Đã kết thúc cuộc gọi"
-  );
+  $("callBox")
+    .classList.add("hidden");
+
+  $("callStatus").textContent =
+    "Chưa kết nối";
+
+};
+
+
+/* =========================
+   ĐĂNG XUẤT
+========================= */
+
+$("logout").onclick = () => {
+
+  $("hang").click();
+
+  currentUser = null;
+
+  showPage("loginPage");
 
 };
 
 </script>
 
 </body>
-  </html>
+</html>
