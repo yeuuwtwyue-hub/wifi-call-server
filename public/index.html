@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>WiFi Call</title>
 
 <style>
@@ -10,454 +10,430 @@
   box-sizing:border-box;
   margin:0;
   padding:0;
-  font-family:Arial,sans-serif
+  font-family:Arial,sans-serif;
 }
 
 body{
-  background:#eef2f7;
-  height:100vh;
-  overflow:hidden
+  background:#0f172a;
+  color:white;
+  min-height:100vh;
 }
 
-.page{
-  display:none;
+button{
+  border:0;
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.container{
   width:100%;
-  height:100vh
+  max-width:500px;
+  margin:auto;
+  padding:20px;
 }
 
-.page.active{
-  display:flex
-}
-
-/* AUTH */
-
+/* LOGIN */
 .auth{
-  justify-content:center;
+  min-height:100vh;
+  display:flex;
   align-items:center;
-  padding:20px
+  justify-content:center;
 }
 
-.box{
+.card{
   width:100%;
-  max-width:380px;
-  background:white;
+  background:#1e293b;
   padding:25px;
-  border-radius:22px;
-  box-shadow:0 8px 30px #0002
+  border-radius:20px;
+  box-shadow:0 10px 40px #0006;
 }
 
-.box h1{
+.logo{
   text-align:center;
-  margin-bottom:20px
+  font-size:32px;
+  font-weight:bold;
+  margin-bottom:10px;
 }
 
-.box input{
+.subtitle{
+  text-align:center;
+  color:#94a3b8;
+  margin-bottom:25px;
+}
+
+input{
   width:100%;
   padding:14px;
   margin:7px 0;
-  border:1px solid #ddd;
+  border:1px solid #475569;
   border-radius:12px;
-  font-size:16px;
-  outline:none
+  background:#0f172a;
+  color:white;
+  outline:none;
 }
 
-.box button{
+input:focus{
+  border-color:#38bdf8;
+}
+
+.main-btn{
   width:100%;
   padding:14px;
   margin-top:10px;
-  border:0;
   border-radius:12px;
-  background:#1683ff;
+  background:#2563eb;
   color:white;
-  font-size:16px
+  font-size:16px;
+  font-weight:bold;
 }
 
-.link{
-  text-align:center;
-  margin-top:16px;
-  color:#1683ff;
-  cursor:pointer
+.secondary-btn{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:12px;
+  background:#334155;
+  color:white;
 }
 
 .status{
   text-align:center;
   margin-top:12px;
-  min-height:20px
+  color:#fbbf24;
+  min-height:20px;
 }
 
-/* HOME */
-
-.home{
-  flex-direction:column
+/* APP */
+.app{
+  min-height:100vh;
 }
 
 .header{
-  height:62px;
-  background:#1683ff;
-  color:white;
+  background:#1e293b;
+  padding:15px 18px;
   display:flex;
-  align-items:center;
   justify-content:space-between;
-  padding:0 16px
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
-.header h2{
-  font-size:21px
+.header-title{
+  font-size:22px;
+  font-weight:bold;
 }
 
-.header button{
-  border:0;
-  background:#ffffff25;
-  color:white;
-  padding:9px 12px;
-  border-radius:10px
+.user{
+  color:#38bdf8;
+  font-size:14px;
 }
 
 .content{
-  flex:1;
-  display:flex;
-  min-height:0
+  padding:18px;
+  max-width:600px;
+  margin:auto;
 }
 
-/* SIDEBAR */
-
-.sidebar{
-  width:30%;
-  min-width:120px;
-  background:white;
-  border-right:1px solid #ddd
-}
-
-.sidebar-title{
+.section{
+  background:#1e293b;
   padding:16px;
-  font-weight:bold
+  border-radius:16px;
+  margin-bottom:15px;
 }
 
-.chat-user{
-  padding:14px;
-  border-top:1px solid #eee;
-  cursor:pointer
+.section h3{
+  margin-bottom:12px;
 }
 
-/* CHAT */
-
-.chat{
-  flex:1;
-  min-width:0;
+.room-row{
   display:flex;
-  flex-direction:column
+  gap:8px;
 }
 
-.chat-top{
-  padding:14px;
-  background:white;
-  border-bottom:1px solid #ddd;
-  font-weight:bold
+.room-row input{
+  margin:0;
 }
 
-.messages{
-  flex:1;
-  padding:15px;
-  overflow-y:auto
+.room-row button{
+  width:100px;
+  border-radius:12px;
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+}
+
+.chat-box{
+  height:300px;
+  overflow-y:auto;
+  background:#0f172a;
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:10px;
 }
 
 .message{
-  width:max-content;
-  max-width:75%;
-  padding:10px 13px;
-  margin:7px 0;
-  border-radius:16px;
-  background:white;
-  box-shadow:0 1px 3px #0001;
-  word-break:break-word
+  background:#334155;
+  padding:9px 12px;
+  border-radius:12px;
+  margin-bottom:7px;
+  word-break:break-word;
 }
 
 .message.me{
-  margin-left:auto;
-  background:#1683ff;
-  color:white
+  background:#2563eb;
+  margin-left:35px;
 }
 
 .message-name{
-  font-size:11px;
-  opacity:.7;
-  margin-bottom:3px
+  font-size:12px;
+  color:#cbd5e1;
+  margin-bottom:3px;
 }
 
-.chat-input{
+.message-time{
+  font-size:10px;
+  color:#cbd5e1;
+  margin-top:3px;
+}
+
+.chat-row{
   display:flex;
   gap:8px;
-  padding:10px;
-  background:white
 }
 
-.chat-input input{
-  flex:1;
-  min-width:0;
-  padding:13px;
-  border:1px solid #ddd;
-  border-radius:12px;
-  outline:none
+.chat-row input{
+  margin:0;
 }
 
-.chat-input button{
-  width:55px;
-  border:0;
+.chat-row button{
+  width:80px;
   border-radius:12px;
-  background:#1683ff;
+  background:#22c55e;
   color:white;
-  font-size:20px
+  font-weight:bold;
 }
 
-/* CALL */
-
-.call-panel{
+.call-controls{
   display:flex;
-  gap:7px;
-  padding:10px;
-  background:white;
-  border-top:1px solid #ddd
+  gap:8px;
+  flex-wrap:wrap;
 }
 
-.call-panel input{
+.call-btn{
   flex:1;
-  min-width:0;
-  padding:11px;
-  border:1px solid #ddd;
-  border-radius:10px
-}
-
-.call-panel button{
-  border:0;
-  border-radius:10px;
-  padding:10px 12px
+  min-width:120px;
+  padding:13px;
+  border-radius:12px;
+  color:white;
+  font-weight:bold;
 }
 
 .call{
-  background:#18a957;
-  color:white
-}
-
-.hang{
-  background:#e53935;
-  color:white
+  background:#22c55e;
 }
 
 .mic{
-  background:#555;
-  color:white
+  background:#f59e0b;
 }
 
-#callStatus{
-  padding:6px 12px;
+.hangup{
+  background:#ef4444;
+}
+
+.logout{
+  width:100%;
+  padding:13px;
+  background:#475569;
+  color:white;
+  border-radius:12px;
+  font-weight:bold;
+}
+
+.connection{
+  text-align:center;
+  padding:8px;
+  color:#94a3b8;
   font-size:13px;
-  background:white;
-  color:#555
 }
 
-audio{
-  display:none
-}
-
-@media(max-width:600px){
-
-  .sidebar{
-    width:100px;
-    min-width:100px
-  }
-
-  .header h2{
-    font-size:18px
-  }
-
-  .call-panel{
-    flex-wrap:wrap
-  }
-
-  .call-panel input{
-    width:100%;
-    flex-basis:100%
-  }
-
+.loading{
+  position:fixed;
+  inset:0;
+  background:#0f172a;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:999;
+  font-size:20px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= LOGIN ================= -->
-
-<div id="loginPage" class="page auth active">
-
-  <div class="box">
-
-    <h1>💬 WiFi Call</h1>
-
-    <input
-      id="loginUser"
-      placeholder="Tên đăng nhập">
-
-    <input
-      id="loginPass"
-      type="password"
-      placeholder="Mật khẩu">
-
-    <button onclick="login()">
-      Đăng nhập
-    </button>
-
-    <div
-      id="loginStatus"
-      class="status">
-    </div>
-
-    <div
-      class="link"
-      onclick="showRegister()">
-      Chưa có tài khoản? Đăng ký
-    </div>
-
-  </div>
-
+<div id="loading" class="loading">
+  Đang kiểm tra đăng nhập...
 </div>
 
+<!-- LOGIN -->
+<div id="loginPage" class="auth hidden">
+  <div class="container">
+    <div class="card">
 
-<!-- ================= REGISTER ================= -->
+      <div class="logo">📞 WiFi Call</div>
+      <div class="subtitle">Đăng nhập tài khoản</div>
 
-<div id="registerPage" class="page auth">
+      <input id="loginUsername"
+             type="text"
+             placeholder="Tên đăng nhập"
+             autocomplete="username">
 
-  <div class="box">
+      <input id="loginPassword"
+             type="password"
+             placeholder="Mật khẩu"
+             autocomplete="current-password">
 
-    <h1>📝 Đăng ký</h1>
+      <button class="main-btn" onclick="login()">
+        Đăng nhập
+      </button>
 
-    <input
-      id="registerUser"
-      placeholder="Tên đăng nhập">
+      <button class="secondary-btn" onclick="showRegister()">
+        Tạo tài khoản
+      </button>
 
-    <input
-      id="registerPass"
-      type="password"
-      placeholder="Mật khẩu">
+      <div id="loginStatus" class="status"></div>
 
-    <button onclick="register()">
-      Đăng ký
-    </button>
-
-    <div
-      id="registerStatus"
-      class="status">
     </div>
-
-    <div
-      class="link"
-      onclick="showLogin()">
-      Đã có tài khoản? Đăng nhập
-    </div>
-
   </div>
-
 </div>
 
+<!-- REGISTER -->
+<div id="registerPage" class="auth hidden">
+  <div class="container">
+    <div class="card">
 
-<!-- ================= HOME ================= -->
+      <div class="logo">📝 Đăng ký</div>
+      <div class="subtitle">Tạo tài khoản WiFi Call</div>
 
-<div id="homePage" class="page home">
+      <input id="registerUsername"
+             type="text"
+             placeholder="Tên đăng nhập"
+             autocomplete="username">
+
+      <input id="registerPassword"
+             type="password"
+             placeholder="Mật khẩu"
+             autocomplete="new-password">
+
+      <button class="main-btn" onclick="register()">
+        Đăng ký
+      </button>
+
+      <button class="secondary-btn" onclick="showLogin()">
+        Quay lại đăng nhập
+      </button>
+
+      <div id="registerStatus" class="status"></div>
+
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appPage" class="app hidden">
 
   <div class="header">
-
-    <h2>💬 WiFi Call</h2>
-
-    <button onclick="logout()">
-      Đăng xuất
-    </button>
-
+    <div>
+      <div class="header-title">📞 WiFi Call</div>
+      <div id="currentUser" class="user"></div>
+    </div>
   </div>
-
 
   <div class="content">
 
-    <!-- DANH SÁCH CHAT -->
+    <!-- ROOM -->
+    <div class="section">
 
-    <div class="sidebar">
+      <h3>🏠 Phòng gọi</h3>
 
-      <div class="sidebar-title">
-        Tin nhắn
+      <div class="room-row">
+        <input id="roomInput"
+               type="text"
+               placeholder="Nhập tên phòng">
+
+        <button onclick="joinRoom()">
+          Vào phòng
+        </button>
       </div>
 
-      <div class="chat-user">
-        👥 Phòng chat
+      <div id="roomStatus" class="connection">
+        Chưa vào phòng
       </div>
 
     </div>
 
-
     <!-- CHAT -->
+    <div class="section">
 
-    <div class="chat">
+      <h3>💬 Chat</h3>
 
-      <div class="chat-top">
-        💬 Phòng chat
-      </div>
+      <div id="chatBox" class="chat-box"></div>
 
-      <div
-        id="messages"
-        class="messages">
-      </div>
-
-
-      <div class="chat-input">
-
-        <input
-          id="messageInput"
-          placeholder="Nhập tin nhắn..."
-          autocomplete="off"
-          onkeydown="
-            if(event.key==='Enter'){
-              sendMessage()
-            }
-          ">
+      <div class="chat-row">
+        <input id="messageInput"
+               type="text"
+               placeholder="Nhập tin nhắn..."
+               onkeydown="if(event.key==='Enter')sendMessage()">
 
         <button onclick="sendMessage()">
-          ➤
+          Gửi
         </button>
-
       </div>
 
+    </div>
 
-      <!-- TRẠNG THÁI GỌI -->
+    <!-- CALL -->
+    <div class="section">
 
-      <div id="callStatus">
-        Chưa gọi
-      </div>
+      <h3>📞 Cuộc gọi</h3>
 
+      <div class="call-controls">
 
-      <!-- GỌI -->
-
-      <div class="call-panel">
-
-        <input
-          id="roomInput"
-          placeholder="Tên phòng, ví dụ: 123">
-
-        <button
-          class="call"
-          onclick="joinCall()">
+        <button class="call-btn call"
+                onclick="joinCall()">
           📞 Gọi
         </button>
 
-        <button
-          class="mic"
-          onclick="toggleMic()">
-          🎙️
+        <button id="micBtn"
+                class="call-btn mic"
+                onclick="toggleMic()">
+          🎤 Mic
         </button>
 
-        <button
-          class="hang"
-          onclick="hangup()">
-          ✖
+        <button class="call-btn hangup"
+                onclick="hangup()">
+          ❌ Cúp máy
         </button>
 
       </div>
+
+      <div id="callStatus" class="connection">
+        Chưa gọi
+      </div>
+
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="section">
+
+      <button class="logout"
+              onclick="logout()">
+        🚪 Đăng xuất
+      </button>
 
     </div>
 
@@ -465,463 +441,561 @@ audio{
 
 </div>
 
-
 <audio id="remoteAudio" autoplay></audio>
-
 
 <script>
 
-/* ==================================================
-   CẤU HÌNH
-================================================== */
+/* =========================
+   SERVER
+========================= */
 
-const SERVER =
-  "https://wifi-call-server-1.onrender.com";
+const SERVER = "https://wifi-call-server-1.onrender.com";
 
-
-let socket = null;
-
+let ws = null;
 let username = "";
-
 let currentRoom = "";
 
-let pc = null;
-
 let localStream = null;
+let peerConnection = null;
 
-let micEnabled = true;
-
-let connectedToCall = false;
+let pendingSession = false;
 
 
-/* ==================================================
-   HIỂN THỊ TRANG
-================================================== */
+/* =========================
+   ELEMENTS
+========================= */
 
-function showPage(id){
+const loading = document.getElementById("loading");
+const loginPage = document.getElementById("loginPage");
+const registerPage = document.getElementById("registerPage");
+const appPage = document.getElementById("appPage");
 
-  document
-    .querySelectorAll(".page")
-    .forEach(page =>
-      page.classList.remove("active")
-    );
+const loginStatus = document.getElementById("loginStatus");
+const registerStatus = document.getElementById("registerStatus");
 
-  document
-    .getElementById(id)
-    .classList.add("active");
-}
+const currentUser = document.getElementById("currentUser");
+const roomStatus = document.getElementById("roomStatus");
+const callStatus = document.getElementById("callStatus");
 
+const chatBox = document.getElementById("chatBox");
+
+
+/* =========================
+   PAGE
+========================= */
 
 function showLogin(){
 
-  document
-    .getElementById("loginStatus")
-    .textContent = "";
+  loginPage.classList.remove("hidden");
+  registerPage.classList.add("hidden");
+  appPage.classList.add("hidden");
 
-  showPage("loginPage");
+  loading.classList.add("hidden");
+
 }
-
 
 function showRegister(){
 
-  document
-    .getElementById("registerStatus")
-    .textContent = "";
+  loginPage.classList.add("hidden");
+  registerPage.classList.remove("hidden");
+  appPage.classList.add("hidden");
 
-  showPage("registerPage");
+  registerStatus.textContent="";
+
 }
-
 
 function showHome(){
 
-  showPage("homePage");
+  loginPage.classList.add("hidden");
+  registerPage.classList.add("hidden");
+  appPage.classList.remove("hidden");
 
-  document
-    .getElementById("callStatus")
-    .textContent =
-      "Đã đăng nhập: " + username;
+  loading.classList.add("hidden");
+
+  currentUser.textContent =
+    "👤 " + username;
+
 }
 
 
-/* ==================================================
+/* =========================
    WEBSOCKET
-================================================== */
+========================= */
 
 function connect(){
 
-  const wsURL =
-    SERVER.replace(
-      /^http/,
-      "ws"
-    );
+  return new Promise((resolve,reject)=>{
 
-  socket =
-    new WebSocket(wsURL);
+    const wsURL =
+      SERVER.replace(/^http/,"ws");
 
+    ws = new WebSocket(wsURL);
 
-  socket.onopen = () => {
+    ws.onopen = ()=>{
 
-    console.log(
-      "WebSocket connected"
-    );
+      console.log("WebSocket connected");
 
-  };
+      roomStatus.textContent =
+        "🟢 Đã kết nối máy chủ";
 
+      resolve();
 
-  socket.onmessage =
-    async event => {
+    };
+
+    ws.onerror = ()=>{
+
+      console.log("WebSocket error");
+
+      reject();
+
+    };
+
+    ws.onclose = ()=>{
+
+      roomStatus.textContent =
+        "🔴 Mất kết nối máy chủ";
+
+    };
+
+    ws.onmessage = event =>{
 
       let data;
 
       try{
-
-        data =
-          JSON.parse(
-            event.data
-          );
-
-      }catch{
-
-        return;
-
+        data = JSON.parse(event.data);
       }
-
-
-      /* ĐĂNG KÝ */
-
-      if(
-        data.type ===
-        "register-result"
-      ){
-
-        const status =
-          document.getElementById(
-            "registerStatus"
-          );
-
-        status.textContent =
-          data.message;
-
-        if(data.success){
-
-          document
-            .getElementById(
-              "registerUser"
-            )
-            .value = "";
-
-          document
-            .getElementById(
-              "registerPass"
-            )
-            .value = "";
-
-          setTimeout(
-            showLogin,
-            1000
-          );
-
-        }
-
+      catch{
         return;
       }
 
-
-      /* ĐĂNG NHẬP */
-
-      if(
-        data.type ===
-        "login-result"
-      ){
-
-        const status =
-          document.getElementById(
-            "loginStatus"
-          );
-
-
-        if(data.success){
-
-          username =
-            data.username;
-
-          status.textContent =
-            "";
-
-          showHome();
-
-        }else{
-
-          status.textContent =
-            data.message;
-
-        }
-
-        return;
-      }
-
-
-      /* CHAT */
-
-      if(
-        data.type ===
-        "chat"
-      ){
-
-        addMessage(
-          data.message
-        );
-
-        return;
-      }
-
-
-      /* NGƯỜI KHÁC VÀO PHÒNG */
-
-      if(
-        data.type ===
-        "peer-joined"
-      ){
-
-        document
-          .getElementById(
-            "callStatus"
-          )
-          .textContent =
-            "📞 Người khác đã vào phòng";
-
-        /*
-          Người vào trước tạo offer.
-        */
-
-        if(
-          pc &&
-          pc.signalingState ===
-          "stable"
-        ){
-
-          await createOffer();
-
-        }
-
-        return;
-      }
-
-
-      /* NGƯỜI KHÁC RỜI */
-
-      if(
-        data.type ===
-        "peer-left"
-      ){
-
-        document
-          .getElementById(
-            "callStatus"
-          )
-          .textContent =
-            "Người kia đã rời cuộc gọi";
-
-        return;
-      }
-
-
-      /* WEBRTC */
-
-      await handleWebRTC(data);
+      handleMessage(data);
 
     };
 
-
-  socket.onclose = () => {
-
-    console.log(
-      "WebSocket disconnected"
-    );
-
-  };
-
-
-  socket.onerror = () => {
-
-    console.log(
-      "WebSocket error"
-    );
-
-  };
+  });
 
 }
 
 
-/* ==================================================
-   ĐĂNG KÝ
-================================================== */
+/* =========================
+   MESSAGE HANDLER
+========================= */
+
+function handleMessage(data){
+
+  /* LOGIN */
+
+  if(data.type === "login-result"){
+
+    if(data.success){
+
+      username = data.username;
+
+      loginStatus.textContent =
+        "Đăng nhập thành công!";
+
+      /*
+       * Tạo session token.
+       * Không lưu mật khẩu.
+       */
+
+      ws.send(JSON.stringify({
+
+        type:"create-session",
+
+        username:
+          document.getElementById("loginUsername").value.trim(),
+
+        password:
+          document.getElementById("loginPassword").value
+
+      }));
+
+    }
+    else{
+
+      loginStatus.textContent =
+        data.message || "Đăng nhập thất bại";
+
+    }
+
+    return;
+  }
+
+
+  /* SESSION CREATED */
+
+  if(data.type === "session-created"){
+
+    if(data.success){
+
+      localStorage.setItem(
+        "wifiCallSession",
+        JSON.stringify({
+
+          username:data.username,
+          token:data.token
+
+        })
+      );
+
+      username = data.username;
+
+      showHome();
+
+    }
+    else{
+
+      showHome();
+
+    }
+
+    return;
+  }
+
+
+  /* AUTO LOGIN */
+
+  if(data.type === "session-result"){
+
+    pendingSession = false;
+
+    if(data.success){
+
+      username = data.username;
+
+      showHome();
+
+    }
+    else{
+
+      localStorage.removeItem(
+        "wifiCallSession"
+      );
+
+      showLogin();
+
+    }
+
+    return;
+  }
+
+
+  /* REGISTER */
+
+  if(data.type === "register-result"){
+
+    if(data.success){
+
+      registerStatus.textContent =
+        "Đăng ký thành công!";
+
+      setTimeout(()=>{
+
+        showLogin();
+
+        document.getElementById(
+          "loginUsername"
+        ).value =
+          document.getElementById(
+            "registerUsername"
+          ).value;
+
+      },800);
+
+    }
+    else{
+
+      registerStatus.textContent =
+        data.message || "Đăng ký thất bại";
+
+    }
+
+    return;
+  }
+
+
+  /* LOGOUT */
+
+  if(data.type === "logout-result"){
+
+    localStorage.removeItem(
+      "wifiCallSession"
+    );
+
+    username = "";
+
+    showLogin();
+
+    return;
+  }
+
+
+  /* CHAT */
+
+  if(data.type === "chat"){
+
+    addMessage(data.message);
+
+    return;
+  }
+
+
+  /* WEBRTC */
+
+  if(data.type === "peer-joined"){
+
+    callStatus.textContent =
+      "👤 Có người đã vào phòng";
+
+    return;
+  }
+
+  if(data.type === "peer-left"){
+
+    callStatus.textContent =
+      "👤 Người kia đã rời phòng";
+
+    closePeer();
+
+    return;
+  }
+
+
+  if(
+    data.type === "offer" ||
+    data.type === "answer" ||
+    data.type === "ice-candidate"
+  ){
+
+    handleWebRTC(data);
+
+    return;
+  }
+
+}
+
+
+/* =========================
+   REGISTER
+========================= */
 
 function register(){
 
   const user =
-    document
-      .getElementById(
-        "registerUser"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "registerUsername"
+    ).value.trim();
 
   const pass =
-    document
-      .getElementById(
-        "registerPass"
-      )
-      .value;
+    document.getElementById(
+      "registerPassword"
+    ).value;
 
+  registerStatus.textContent =
+    "Đang đăng ký...";
 
   if(!user || !pass){
 
-    document
-      .getElementById(
-        "registerStatus"
-      )
-      .textContent =
-        "Vui lòng nhập đầy đủ";
+    registerStatus.textContent =
+      "Vui lòng nhập đầy đủ";
 
     return;
   }
 
+  ws.send(JSON.stringify({
 
-  if(!socket ||
-     socket.readyState !==
-     WebSocket.OPEN){
+    type:"register",
 
-    document
-      .getElementById(
-        "registerStatus"
-      )
-      .textContent =
-        "Đang kết nối server...";
+    username:user,
 
-    connect();
+    password:pass
 
-    setTimeout(
-      register,
-      1000
-    );
-
-    return;
-  }
-
-
-  socket.send(
-    JSON.stringify({
-
-      type:
-        "register",
-
-      username:
-        user,
-
-      password:
-        pass
-
-    })
-  );
-
-
-  document
-    .getElementById(
-      "registerStatus"
-    )
-    .textContent =
-      "Đang đăng ký...";
+  }));
 
 }
 
 
-/* ==================================================
-   ĐĂNG NHẬP
-================================================== */
+/* =========================
+   LOGIN
+========================= */
 
 function login(){
 
   const user =
-    document
-      .getElementById(
-        "loginUser"
-      )
-      .value
-      .trim();
+    document.getElementById(
+      "loginUsername"
+    ).value.trim();
 
   const pass =
-    document
-      .getElementById(
-        "loginPass"
-      )
-      .value;
-
+    document.getElementById(
+      "loginPassword"
+    ).value;
 
   if(!user || !pass){
 
-    document
-      .getElementById(
-        "loginStatus"
-      )
-      .textContent =
-        "Vui lòng nhập đầy đủ";
+    loginStatus.textContent =
+      "Vui lòng nhập tài khoản và mật khẩu";
 
     return;
   }
 
+  loginStatus.textContent =
+    "Đang đăng nhập...";
 
-  if(!socket ||
-     socket.readyState !==
-     WebSocket.OPEN){
+  ws.send(JSON.stringify({
 
-    document
-      .getElementById(
-        "loginStatus"
-      )
-      .textContent =
-      "Đang kết nối server...";
+    type:"login",
 
-    connect();
+    username:user,
 
-    setTimeout(
-      login,
-      1000
-    );
+    password:pass
 
-    return;
-  }
-
-
-  socket.send(
-    JSON.stringify({
-
-      type:
-        "login",
-
-      username:
-        user,
-
-      password:
-        pass
-
-    })
-  );
-
-
-  document
-    .getElementById(
-      "loginStatus"
-    )
-    .textContent =
-      "Đang đăng nhập...";
+  }));
 
 }
 
 
-/* ==================================================
+/* =========================
+   AUTO LOGIN
+========================= */
+
+function tryAutoLogin(){
+
+  const saved =
+    localStorage.getItem(
+      "wifiCallSession"
+    );
+
+  if(!saved){
+
+    showLogin();
+
+    return;
+
+  }
+
+  let session;
+
+  try{
+
+    session = JSON.parse(saved);
+
+  }
+  catch{
+
+    localStorage.removeItem(
+      "wifiCallSession"
+    );
+
+    showLogin();
+
+    return;
+
+  }
+
+  if(
+    !session.username ||
+    !session.token
+  ){
+
+    localStorage.removeItem(
+      "wifiCallSession"
+    );
+
+    showLogin();
+
+    return;
+
+  }
+
+  pendingSession = true;
+
+  ws.send(JSON.stringify({
+
+    type:"session-login",
+
+    username:session.username,
+
+    token:session.token
+
+  }));
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+
+  if(ws && ws.readyState === WebSocket.OPEN){
+
+    ws.send(JSON.stringify({
+
+      type:"logout"
+
+    }));
+
+  }
+  else{
+
+    localStorage.removeItem(
+      "wifiCallSession"
+    );
+
+    username="";
+
+    showLogin();
+
+  }
+
+}
+
+
+/* =========================
+   ROOM
+========================= */
+
+function joinRoom(){
+
+  const room =
+    document.getElementById(
+      "roomInput"
+    ).value.trim();
+
+  if(!room){
+
+    roomStatus.textContent =
+      "⚠️ Nhập tên phòng";
+
+    return;
+
+  }
+
+  currentRoom = room;
+
+  ws.send(JSON.stringify({
+
+    type:"join",
+
+    room:room
+
+  }));
+
+  roomStatus.textContent =
+    "🟢 Đang ở phòng: " + room;
+
+  callStatus.textContent =
+    "Sẵn sàng gọi";
+
+}
+
+
+/* =========================
    CHAT
-================================================== */
+========================= */
 
 function sendMessage(){
 
@@ -933,81 +1007,45 @@ function sendMessage(){
   const text =
     input.value.trim();
 
-
   if(!text) return;
-
-
-  if(
-    !socket ||
-    socket.readyState !==
-    WebSocket.OPEN
-  ){
-
-    alert(
-      "Chưa kết nối server"
-    );
-
-    return;
-  }
-
 
   if(!currentRoom){
 
-    alert(
-      "Hãy vào phòng trước"
-    );
+    alert("Hãy vào phòng trước!");
 
     return;
+
   }
 
+  ws.send(JSON.stringify({
 
-  socket.send(
-    JSON.stringify({
+    type:"chat",
 
-      type:
-        "chat",
+    text:text
 
-      text:
-        text
+  }));
 
-    })
-  );
-
-
-  input.value = "";
-
-  input.focus();
+  input.value="";
 
 }
 
 
 function addMessage(message){
 
-  const box =
-    document.getElementById(
-      "messages"
-    );
-
-
   const div =
-    document.createElement(
-      "div"
-    );
-
+    document.createElement("div");
 
   div.className =
-    "message" +
-    (
-      message.from === username
-        ? " me"
-        : ""
-    );
+    "message";
 
+  if(message.from === username){
+
+    div.classList.add("me");
+
+  }
 
   const name =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   name.className =
     "message-name";
@@ -1015,161 +1053,125 @@ function addMessage(message){
   name.textContent =
     message.from;
 
-
   const text =
-    document.createElement(
-      "div"
-    );
+    document.createElement("div");
 
   text.textContent =
     message.text;
 
+  const time =
+    document.createElement("div");
+
+  time.className =
+    "message-time";
+
+  time.textContent =
+    new Date(
+      message.time
+    ).toLocaleTimeString(
+      "vi-VN",
+      {
+        hour:"2-digit",
+        minute:"2-digit"
+      }
+    );
 
   div.appendChild(name);
-
   div.appendChild(text);
+  div.appendChild(time);
 
-  box.appendChild(div);
+  chatBox.appendChild(div);
 
-
-  box.scrollTop =
-    box.scrollHeight;
+  chatBox.scrollTop =
+    chatBox.scrollHeight;
 
 }
 
 
-/* ==================================================
-   VÀO PHÒNG GỌI + CHAT
-================================================== */
+/* =========================
+   WEBRTC
+========================= */
+
+const rtcConfig = {
+
+  iceServers:[
+
+    {
+      urls:
+        "stun:stun.l.google.com:19302"
+    }
+
+  ]
+
+};
+
 
 async function joinCall(){
 
-  const room =
-    document
-      .getElementById(
-        "roomInput"
-      )
-      .value
-      .trim();
-
-
-  if(!room){
+  if(!currentRoom){
 
     alert(
-      "Nhập tên phòng"
+      "Hãy vào phòng trước!"
     );
 
     return;
+
   }
-
-
-  if(
-    !socket ||
-    socket.readyState !==
-    WebSocket.OPEN
-  ){
-
-    alert(
-      "Chưa kết nối server"
-    );
-
-    return;
-  }
-
-
-  currentRoom =
-    room;
-
-
-  document
-    .getElementById(
-      "callStatus"
-    )
-    .textContent =
-      "Đang vào phòng " +
-      room;
-
 
   try{
 
     localStream =
-      await navigator.mediaDevices
-        .getUserMedia({
-          audio:true,
-          video:false
-        });
+      await navigator.mediaDevices.getUserMedia({
 
+        audio:true,
+        video:false
 
-    createPeerConnection();
+      });
 
+    callStatus.textContent =
+      "🎤 Micro đã bật";
 
-    socket.send(
-      JSON.stringify({
+    await createPeerConnection();
 
-        type:
-          "join",
+    await createOffer();
 
-        room:
-          room
-
-      })
-    );
-
-
-    connectedToCall =
-      true;
-
-
-    document
-      .getElementById(
-        "callStatus"
-      )
-      .textContent =
-        "🟢 Đã vào phòng " +
-        room;
-
-  }catch(error){
+  }
+  catch(error){
 
     console.error(error);
 
-    document
-      .getElementById(
-        "callStatus"
-      )
-      .textContent =
-        "Không lấy được microphone";
+    callStatus.textContent =
+      "❌ Không thể bật microphone";
+
+    alert(
+      "Hãy cho phép trình duyệt sử dụng microphone."
+    );
 
   }
 
 }
 
 
-/* ==================================================
-   WEBRTC
-================================================== */
+async function createPeerConnection(){
 
-function createPeerConnection(){
+  if(peerConnection){
 
-  pc =
-    new RTCPeerConnection({
+    peerConnection.close();
 
-      iceServers:[
-        {
-          urls:
-            "stun:stun.l.google.com:19302"
-        }
-      ]
+  }
 
-    });
-
+  peerConnection =
+    new RTCPeerConnection(
+      rtcConfig
+    );
 
   if(localStream){
 
     localStream
       .getTracks()
-      .forEach(track => {
+      .forEach(track=>{
 
-        pc.addTrack(
+        peerConnection.addTrack(
           track,
           localStream
         );
@@ -1178,36 +1180,26 @@ function createPeerConnection(){
 
   }
 
+  peerConnection.onicecandidate =
+    event =>{
 
-  pc.onicecandidate =
-    event => {
+      if(event.candidate){
 
-      if(
-        event.candidate &&
-        socket &&
-        socket.readyState ===
-        WebSocket.OPEN
-      ){
+        ws.send(JSON.stringify({
 
-        socket.send(
-          JSON.stringify({
+          type:"ice-candidate",
 
-            type:
-              "candidate",
+          candidate:event.candidate
 
-            candidate:
-              event.candidate
-
-          })
-        );
+        }));
 
       }
 
     };
 
 
-  pc.ontrack =
-    event => {
+  peerConnection.ontrack =
+    event =>{
 
       const audio =
         document.getElementById(
@@ -1217,44 +1209,37 @@ function createPeerConnection(){
       audio.srcObject =
         event.streams[0];
 
-      audio.play()
-        .catch(
-          () => {}
-        );
+      audio.play().catch(()=>{});
+
+      callStatus.textContent =
+        "🔊 Đang gọi";
 
     };
 
 
-  pc.onconnectionstatechange =
-    () => {
+  peerConnection.onconnectionstatechange =
+    ()=>{
 
-      if(
-        pc.connectionState ===
-        "connected"
-      ){
+      if(!peerConnection)
+        return;
 
-        document
-          .getElementById(
-            "callStatus"
-          )
-          .textContent =
-            "🟢 Đang gọi";
+      const state =
+        peerConnection.connectionState;
+
+      if(state === "connected"){
+
+        callStatus.textContent =
+          "🟢 Đang gọi";
 
       }
 
       if(
-        pc.connectionState ===
-        "disconnected" ||
-        pc.connectionState ===
-        "failed"
+        state === "disconnected" ||
+        state === "failed"
       ){
 
-        document
-          .getElementById(
-            "callStatus"
-          )
-          .textContent =
-            "Cuộc gọi bị ngắt";
+        callStatus.textContent =
+          "🔴 Cuộc gọi bị ngắt";
 
       }
 
@@ -1265,128 +1250,94 @@ function createPeerConnection(){
 
 async function createOffer(){
 
-  if(!pc) return;
+  if(!peerConnection){
 
-
-  try{
-
-    const offer =
-      await pc.createOffer();
-
-
-    await pc.setLocalDescription(
-      offer
-    );
-
-
-    socket.send(
-      JSON.stringify({
-
-        type:
-          "offer",
-
-        offer:
-          pc.localDescription
-
-      })
-    );
-
-  }catch(error){
-
-    console.error(error);
+    await createPeerConnection();
 
   }
+
+  const offer =
+    await peerConnection.createOffer();
+
+  await peerConnection.setLocalDescription(
+    offer
+  );
+
+  ws.send(JSON.stringify({
+
+    type:"offer",
+
+    offer:offer
+
+  }));
 
 }
 
 
 async function handleWebRTC(data){
 
-  if(
-    data.type !== "offer" &&
-    data.type !== "answer" &&
-    data.type !== "candidate"
-  ){
-
-    return;
-  }
-
-
-  if(!pc){
-
-    createPeerConnection();
-
-  }
-
-
   try{
 
-    if(
-      data.type ===
-      "offer"
-    ){
+    if(!peerConnection){
 
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(
-          data.offer
-        )
+      await createPeerConnection();
+
+    }
+
+
+    if(data.type === "offer"){
+
+      await peerConnection.setRemoteDescription(
+        data.offer
       );
 
-
       const answer =
-        await pc.createAnswer();
+        await peerConnection.createAnswer();
 
-
-      await pc.setLocalDescription(
+      await peerConnection.setLocalDescription(
         answer
       );
 
+      ws.send(JSON.stringify({
 
-      socket.send(
-        JSON.stringify({
+        type:"answer",
 
-          type:
-            "answer",
+        answer:answer
 
-          answer:
-            pc.localDescription
+      }));
 
-        })
-      );
+      callStatus.textContent =
+        "📞 Đã nhận cuộc gọi";
 
-      return;
     }
 
 
-    if(
-      data.type ===
-      "answer"
-    ){
+    if(data.type === "answer"){
 
-      await pc.setRemoteDescription(
-        new RTCSessionDescription(
-          data.answer
-        )
+      await peerConnection.setRemoteDescription(
+        data.answer
       );
 
-      return;
+      callStatus.textContent =
+        "🟢 Đã kết nối";
+
     }
 
 
-    if(
-      data.type ===
-      "candidate"
-    ){
+    if(data.type === "ice-candidate"){
 
-      await pc.addIceCandidate(
-        new RTCIceCandidate(
+      if(data.candidate){
+
+        await peerConnection.addIceCandidate(
           data.candidate
-        )
-      );
+        );
+
+      }
 
     }
 
-  }catch(error){
+  }
+  catch(error){
 
     console.error(
       "WebRTC error:",
@@ -1398,124 +1349,104 @@ async function handleWebRTC(data){
 }
 
 
-/* ==================================================
-   MIC
-================================================== */
+/* =========================
+   MICROPHONE
+========================= */
 
 function toggleMic(){
 
   if(!localStream){
 
-    return;
-  }
-
-
-  micEnabled =
-    !micEnabled;
-
-
-  localStream
-    .getAudioTracks()
-    .forEach(
-      track =>
-        track.enabled =
-          micEnabled
+    alert(
+      "Bạn chưa bắt đầu cuộc gọi."
     );
 
+    return;
 
-  document
-    .getElementById(
-      "callStatus"
-    )
-    .textContent =
-      micEnabled
-        ? "🎙️ Micro đã bật"
-        : "🔇 Micro đã tắt";
+  }
+
+  const track =
+    localStream.getAudioTracks()[0];
+
+  if(!track) return;
+
+  track.enabled =
+    !track.enabled;
+
+  document.getElementById(
+    "micBtn"
+  ).textContent =
+    track.enabled
+      ? "🎤 Mic"
+      : "🔇 Mic tắt";
 
 }
 
 
-/* ==================================================
-   KẾT THÚC CUỘC GỌI
-================================================== */
+/* =========================
+   HANG UP
+========================= */
 
 function hangup(){
-
-  if(pc){
-
-    pc.close();
-
-    pc = null;
-
-  }
-
 
   if(localStream){
 
     localStream
       .getTracks()
-      .forEach(
-        track =>
-          track.stop()
-      );
+      .forEach(track=>{
+        track.stop();
+      });
 
-    localStream =
-      null;
+    localStream=null;
 
   }
 
+  if(peerConnection){
 
-  currentRoom =
-    "";
+    peerConnection.close();
 
+    peerConnection=null;
 
-  connectedToCall =
-    false;
+  }
 
+  document.getElementById(
+    "remoteAudio"
+  ).srcObject=null;
 
-  document
-    .getElementById(
-      "callStatus"
-    )
-    .textContent =
-      "Đã kết thúc cuộc gọi";
-
-}
-
-
-/* ==================================================
-   ĐĂNG XUẤT
-================================================== */
-
-function logout(){
-
-  hangup();
-
-  username =
-    "";
-
-  currentRoom =
-    "";
-
-  document
-    .getElementById(
-      "messages"
-    )
-    .innerHTML =
-      "";
-
-  showLogin();
+  callStatus.textContent =
+    "Đã kết thúc cuộc gọi";
 
 }
 
 
-/* ==================================================
-   KHỞI ĐỘNG
-================================================== */
+/* =========================
+   CLOSE PEER
+========================= */
 
-connect();
+function closePeer(){
 
-</script>
+  if(peerConnection){
 
-</body>
-  </html>
+    peerConnection.close();
+
+    peerConnection=null;
+
+  }
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+async function start(){
+
+  try{
+
+    await connect();
+
+    /*
+     * Sau khi WebSocket mở,
+     * kiểm tra token đã lưu.
+    
