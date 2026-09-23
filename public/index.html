@@ -2,432 +2,330 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WiFi Call</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial}
+body{background:#0f172a;color:white}
+.hidden{display:none!important}
 
-body{
-  background:#0f172a;
-  color:white;
-  min-height:100vh;
-}
-
-button{
-  border:0;
-  cursor:pointer;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.container{
-  width:100%;
-  max-width:500px;
-  margin:auto;
-  padding:20px;
-}
-
-/* LOGIN */
 .auth{
   min-height:100vh;
   display:flex;
   align-items:center;
   justify-content:center;
+  padding:20px
 }
 
 .card{
   width:100%;
+  max-width:430px;
   background:#1e293b;
   padding:25px;
-  border-radius:20px;
-  box-shadow:0 10px 40px #0006;
+  border-radius:20px
 }
 
-.logo{
-  text-align:center;
-  font-size:32px;
-  font-weight:bold;
-  margin-bottom:10px;
-}
-
-.subtitle{
-  text-align:center;
-  color:#94a3b8;
-  margin-bottom:25px;
-}
+.logo{text-align:center;font-size:30px;font-weight:bold}
+.sub{text-align:center;color:#94a3b8;margin:10px 0 20px}
 
 input{
   width:100%;
   padding:14px;
-  margin:7px 0;
-  border:1px solid #475569;
+  margin:6px 0;
   border-radius:12px;
+  border:1px solid #475569;
   background:#0f172a;
   color:white;
-  outline:none;
+  outline:none
 }
 
-input:focus{
-  border-color:#38bdf8;
-}
-
-.main-btn{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
+button{
+  border:0;
   border-radius:12px;
+  padding:13px;
+  cursor:pointer;
+  color:white;
+  font-weight:bold
+}
+
+.main{
+  width:100%;
   background:#2563eb;
-  color:white;
-  font-size:16px;
-  font-weight:bold;
+  margin-top:10px
 }
 
-.secondary-btn{
+.secondary{
   width:100%;
-  padding:12px;
-  margin-top:8px;
-  border-radius:12px;
-  background:#334155;
-  color:white;
+  background:#475569;
+  margin-top:8px
 }
 
 .status{
   text-align:center;
   margin-top:12px;
-  color:#fbbf24;
   min-height:20px;
+  color:#fbbf24
 }
 
-/* APP */
-.app{
-  min-height:100vh;
-}
+#appPage{min-height:100vh}
 
 .header{
   background:#1e293b;
-  padding:15px 18px;
+  padding:15px;
   display:flex;
   justify-content:space-between;
-  align-items:center;
   position:sticky;
-  top:0;
-  z-index:10;
+  top:0
 }
 
-.header-title{
-  font-size:22px;
-  font-weight:bold;
-}
-
-.user{
-  color:#38bdf8;
-  font-size:14px;
-}
+.title{font-size:22px;font-weight:bold}
+.user{color:#38bdf8;font-size:13px}
 
 .content{
-  padding:18px;
   max-width:600px;
   margin:auto;
+  padding:15px
 }
 
 .section{
   background:#1e293b;
-  padding:16px;
+  padding:15px;
   border-radius:16px;
-  margin-bottom:15px;
+  margin-bottom:15px
 }
 
-.section h3{
-  margin-bottom:12px;
-}
+.section h3{margin-bottom:12px}
 
-.room-row{
+.row{
   display:flex;
-  gap:8px;
+  gap:8px
 }
 
-.room-row input{
-  margin:0;
-}
+.row input{margin:0}
 
-.room-row button{
+.row button{
   width:100px;
-  border-radius:12px;
-  background:#2563eb;
-  color:white;
-  font-weight:bold;
+  background:#2563eb
 }
 
-.chat-box{
+.info{
+  text-align:center;
+  color:#94a3b8;
+  font-size:13px;
+  padding-top:8px
+}
+
+.chat{
   height:300px;
   overflow-y:auto;
   background:#0f172a;
-  border-radius:12px;
   padding:10px;
-  margin-bottom:10px;
+  border-radius:12px
 }
 
-.message{
+.msg{
   background:#334155;
-  padding:9px 12px;
+  padding:9px;
   border-radius:12px;
-  margin-bottom:7px;
-  word-break:break-word;
+  margin-bottom:7px
 }
 
-.message.me{
+.msg.me{
   background:#2563eb;
-  margin-left:35px;
+  margin-left:35px
 }
 
-.message-name{
+.name{
   font-size:12px;
-  color:#cbd5e1;
-  margin-bottom:3px;
+  color:#cbd5e1
 }
 
-.message-time{
+.time{
   font-size:10px;
   color:#cbd5e1;
-  margin-top:3px;
+  margin-top:3px
 }
 
-.chat-row{
+.call-buttons{
   display:flex;
   gap:8px;
+  flex-wrap:wrap
 }
 
-.chat-row input{
-  margin:0;
-}
-
-.chat-row button{
-  width:80px;
-  border-radius:12px;
-  background:#22c55e;
-  color:white;
-  font-weight:bold;
-}
-
-.call-controls{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-}
-
-.call-btn{
+.call-buttons button{
   flex:1;
-  min-width:120px;
-  padding:13px;
-  border-radius:12px;
-  color:white;
-  font-weight:bold;
+  min-width:100px
 }
 
-.call{
-  background:#22c55e;
-}
-
-.mic{
-  background:#f59e0b;
-}
-
-.hangup{
-  background:#ef4444;
-}
-
+.call{background:#22c55e}
+.mic{background:#f59e0b}
+.hang{background:#ef4444}
 .logout{
   width:100%;
-  padding:13px;
-  background:#475569;
-  color:white;
-  border-radius:12px;
-  font-weight:bold;
+  background:#475569
 }
 
-.connection{
-  text-align:center;
-  padding:8px;
-  color:#94a3b8;
-  font-size:13px;
-}
-
-.loading{
+#loading{
   position:fixed;
   inset:0;
   background:#0f172a;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   z-index:999;
-  font-size:20px;
+  font-size:19px
 }
 </style>
 </head>
 
 <body>
 
-<div id="loading" class="loading">
-  Đang kiểm tra đăng nhập...
+<div id="loading">
+  🔄 Đang kết nối máy chủ...
 </div>
 
 <!-- LOGIN -->
 <div id="loginPage" class="auth hidden">
-  <div class="container">
-    <div class="card">
+  <div class="card">
 
-      <div class="logo">📞 WiFi Call</div>
-      <div class="subtitle">Đăng nhập tài khoản</div>
+    <div class="logo">📞 WiFi Call</div>
+    <div class="sub">Đăng nhập</div>
 
-      <input id="loginUsername"
-             type="text"
-             placeholder="Tên đăng nhập"
-             autocomplete="username">
+    <input id="loginUser"
+           placeholder="Tên đăng nhập"
+           autocomplete="username">
 
-      <input id="loginPassword"
-             type="password"
-             placeholder="Mật khẩu"
-             autocomplete="current-password">
+    <input id="loginPass"
+           type="password"
+           placeholder="Mật khẩu"
+           autocomplete="current-password">
 
-      <button class="main-btn" onclick="login()">
-        Đăng nhập
-      </button>
+    <button class="main" onclick="login()">
+      Đăng nhập
+    </button>
 
-      <button class="secondary-btn" onclick="showRegister()">
-        Tạo tài khoản
-      </button>
+    <button class="secondary" onclick="showRegister()">
+      Tạo tài khoản
+    </button>
 
-      <div id="loginStatus" class="status"></div>
+    <div id="loginStatus" class="status"></div>
 
-    </div>
   </div>
 </div>
 
 <!-- REGISTER -->
 <div id="registerPage" class="auth hidden">
-  <div class="container">
-    <div class="card">
+  <div class="card">
 
-      <div class="logo">📝 Đăng ký</div>
-      <div class="subtitle">Tạo tài khoản WiFi Call</div>
+    <div class="logo">📝 Đăng ký</div>
+    <div class="sub">Tạo tài khoản</div>
 
-      <input id="registerUsername"
-             type="text"
-             placeholder="Tên đăng nhập"
-             autocomplete="username">
+    <input id="registerUser"
+           placeholder="Tên đăng nhập">
 
-      <input id="registerPassword"
-             type="password"
-             placeholder="Mật khẩu"
-             autocomplete="new-password">
+    <input id="registerPass"
+           type="password"
+           placeholder="Mật khẩu">
 
-      <button class="main-btn" onclick="register()">
-        Đăng ký
-      </button>
+    <button class="main" onclick="register()">
+      Đăng ký
+    </button>
 
-      <button class="secondary-btn" onclick="showLogin()">
-        Quay lại đăng nhập
-      </button>
+    <button class="secondary" onclick="showLogin()">
+      Quay lại
+    </button>
 
-      <div id="registerStatus" class="status"></div>
+    <div id="registerStatus" class="status"></div>
 
-    </div>
   </div>
 </div>
 
 <!-- APP -->
-<div id="appPage" class="app hidden">
+<div id="appPage" class="hidden">
 
   <div class="header">
     <div>
-      <div class="header-title">📞 WiFi Call</div>
+      <div class="title">📞 WiFi Call</div>
       <div id="currentUser" class="user"></div>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- ROOM -->
     <div class="section">
 
-      <h3>🏠 Phòng gọi</h3>
+      <h3>🏠 Phòng</h3>
 
-      <div class="room-row">
-        <input id="roomInput"
-               type="text"
-               placeholder="Nhập tên phòng">
+      <div class="row">
+
+        <input id="room"
+               placeholder="Tên phòng">
 
         <button onclick="joinRoom()">
-          Vào phòng
+          Vào
         </button>
+
       </div>
 
-      <div id="roomStatus" class="connection">
+      <div id="roomInfo" class="info">
         Chưa vào phòng
       </div>
 
     </div>
 
-    <!-- CHAT -->
     <div class="section">
 
       <h3>💬 Chat</h3>
 
-      <div id="chatBox" class="chat-box"></div>
+      <div id="chat" class="chat"></div>
 
-      <div class="chat-row">
-        <input id="messageInput"
-               type="text"
-               placeholder="Nhập tin nhắn..."
+      <div class="row" style="margin-top:8px">
+
+        <input id="message"
+               placeholder="Tin nhắn..."
                onkeydown="if(event.key==='Enter')sendMessage()">
 
-        <button onclick="sendMessage()">
+        <button
+          style="background:#22c55e"
+          onclick="sendMessage()">
           Gửi
         </button>
+
       </div>
 
     </div>
 
-    <!-- CALL -->
     <div class="section">
 
-      <h3>📞 Cuộc gọi</h3>
+      <h3>📞 Gọi</h3>
 
-      <div class="call-controls">
+      <div class="call-buttons">
 
-        <button class="call-btn call"
-                onclick="joinCall()">
+        <button class="call"
+                onclick="startCall()">
           📞 Gọi
         </button>
 
-        <button id="micBtn"
-                class="call-btn mic"
+        <button id="mic"
+                class="mic"
                 onclick="toggleMic()">
           🎤 Mic
         </button>
 
-        <button class="call-btn hangup"
+        <button class="hang"
                 onclick="hangup()">
-          ❌ Cúp máy
+          ❌ Cúp
         </button>
 
       </div>
 
-      <div id="callStatus" class="connection">
+      <div id="callInfo" class="info">
         Chưa gọi
       </div>
 
     </div>
 
-    <!-- ACCOUNT -->
     <div class="section">
 
       <button class="logout"
@@ -441,134 +339,148 @@ input:focus{
 
 </div>
 
-<audio id="remoteAudio" autoplay></audio>
+<audio id="remote" autoplay></audio>
 
 <script>
 
-/* =========================
-   SERVER
-========================= */
+const SERVER =
+"https://wifi-call-server-1.onrender.com";
 
-const SERVER = "https://wifi-call-server-1.onrender.com";
-
-let ws = null;
-let username = "";
-let currentRoom = "";
-
-let localStream = null;
-let peerConnection = null;
-
-let pendingSession = false;
+let ws=null;
+let username="";
+let currentRoom="";
+let localStream=null;
+let peer=null;
 
 
 /* =========================
-   ELEMENTS
+   HIỂN THỊ
 ========================= */
 
-const loading = document.getElementById("loading");
-const loginPage = document.getElementById("loginPage");
-const registerPage = document.getElementById("registerPage");
-const appPage = document.getElementById("appPage");
-
-const loginStatus = document.getElementById("loginStatus");
-const registerStatus = document.getElementById("registerStatus");
-
-const currentUser = document.getElementById("currentUser");
-const roomStatus = document.getElementById("roomStatus");
-const callStatus = document.getElementById("callStatus");
-
-const chatBox = document.getElementById("chatBox");
-
-
-/* =========================
-   PAGE
-========================= */
+function hideLoading(){
+  document.getElementById("loading")
+    .classList.add("hidden");
+}
 
 function showLogin(){
 
-  loginPage.classList.remove("hidden");
-  registerPage.classList.add("hidden");
-  appPage.classList.add("hidden");
+  hideLoading();
 
-  loading.classList.add("hidden");
+  document.getElementById("loginPage")
+    .classList.remove("hidden");
+
+  document.getElementById("registerPage")
+    .classList.add("hidden");
+
+  document.getElementById("appPage")
+    .classList.add("hidden");
 
 }
 
 function showRegister(){
 
-  loginPage.classList.add("hidden");
-  registerPage.classList.remove("hidden");
-  appPage.classList.add("hidden");
+  document.getElementById("loginPage")
+    .classList.add("hidden");
 
-  registerStatus.textContent="";
+  document.getElementById("registerPage")
+    .classList.remove("hidden");
+
+  document.getElementById("appPage")
+    .classList.add("hidden");
 
 }
 
-function showHome(){
+function showApp(){
 
-  loginPage.classList.add("hidden");
-  registerPage.classList.add("hidden");
-  appPage.classList.remove("hidden");
+  hideLoading();
 
-  loading.classList.add("hidden");
+  document.getElementById("loginPage")
+    .classList.add("hidden");
 
-  currentUser.textContent =
-    "👤 " + username;
+  document.getElementById("registerPage")
+    .classList.add("hidden");
+
+  document.getElementById("appPage")
+    .classList.remove("hidden");
+
+  document.getElementById("currentUser")
+    .textContent="👤 "+username;
 
 }
 
 
 /* =========================
-   WEBSOCKET
+   KẾT NỐI
 ========================= */
 
 function connect(){
 
   return new Promise((resolve,reject)=>{
 
-    const wsURL =
+    const url =
       SERVER.replace(/^http/,"ws");
 
-    ws = new WebSocket(wsURL);
+    ws=new WebSocket(url);
 
-    ws.onopen = ()=>{
+    let finished=false;
 
-      console.log("WebSocket connected");
+    const timer=setTimeout(()=>{
 
-      roomStatus.textContent =
-        "🟢 Đã kết nối máy chủ";
+      if(finished)return;
+
+      finished=true;
+
+      reject(
+        new Error("Timeout")
+      );
+
+    },8000);
+
+    ws.onopen=()=>{
+
+      if(finished)return;
+
+      finished=true;
+
+      clearTimeout(timer);
 
       resolve();
 
     };
 
-    ws.onerror = ()=>{
+    ws.onerror=()=>{
 
-      console.log("WebSocket error");
+      if(finished)return;
 
-      reject();
+      finished=true;
+
+      clearTimeout(timer);
+
+      reject(
+        new Error("WebSocket error")
+      );
 
     };
 
-    ws.onclose = ()=>{
+    ws.onclose=()=>{
 
-      roomStatus.textContent =
+      document.getElementById("roomInfo")
+        .textContent=
         "🔴 Mất kết nối máy chủ";
 
     };
 
-    ws.onmessage = event =>{
+    ws.onmessage=e=>{
 
       let data;
 
       try{
-        data = JSON.parse(event.data);
-      }
-      catch{
+        data=JSON.parse(e.data);
+      }catch{
         return;
       }
 
-      handleMessage(data);
+      handle(data);
 
     };
 
@@ -578,75 +490,67 @@ function connect(){
 
 
 /* =========================
-   MESSAGE HANDLER
+   XỬ LÝ SERVER
 ========================= */
 
-function handleMessage(data){
+function handle(data){
 
   /* LOGIN */
 
-  if(data.type === "login-result"){
+  if(data.type==="login-result"){
 
-    if(data.success){
+    if(!data.success){
 
-      username = data.username;
+      document.getElementById("loginStatus")
+        .textContent=
+        data.message ||
+        "Sai tài khoản hoặc mật khẩu";
 
-      loginStatus.textContent =
-        "Đăng nhập thành công!";
-
-      /*
-       * Tạo session token.
-       * Không lưu mật khẩu.
-       */
-
-      ws.send(JSON.stringify({
-
-        type:"create-session",
-
-        username:
-          document.getElementById("loginUsername").value.trim(),
-
-        password:
-          document.getElementById("loginPassword").value
-
-      }));
+      return;
 
     }
-    else{
 
-      loginStatus.textContent =
-        data.message || "Đăng nhập thất bại";
+    username=data.username;
 
-    }
+    const user=
+      document.getElementById("loginUser")
+        .value.trim();
+
+    const pass=
+      document.getElementById("loginPass")
+        .value;
+
+    ws.send(JSON.stringify({
+
+      type:"create-session",
+
+      username:user,
+
+      password:pass
+
+    }));
 
     return;
   }
 
 
-  /* SESSION CREATED */
+  /* SESSION */
 
-  if(data.type === "session-created"){
+  if(data.type==="session-created"){
 
     if(data.success){
 
       localStorage.setItem(
         "wifiCallSession",
         JSON.stringify({
-
           username:data.username,
           token:data.token
-
         })
       );
 
-      username = data.username;
+      username=data.username;
 
-      showHome();
-
-    }
-    else{
-
-      showHome();
+      showApp();
 
     }
 
@@ -656,15 +560,13 @@ function handleMessage(data){
 
   /* AUTO LOGIN */
 
-  if(data.type === "session-result"){
-
-    pendingSession = false;
+  if(data.type==="session-result"){
 
     if(data.success){
 
-      username = data.username;
+      username=data.username;
 
-      showHome();
+      showApp();
 
     }
     else{
@@ -683,31 +585,20 @@ function handleMessage(data){
 
   /* REGISTER */
 
-  if(data.type === "register-result"){
+  if(data.type==="register-result"){
+
+    document.getElementById(
+      "registerStatus"
+    ).textContent=
+      data.message || "";
 
     if(data.success){
-
-      registerStatus.textContent =
-        "Đăng ký thành công!";
 
       setTimeout(()=>{
 
         showLogin();
 
-        document.getElementById(
-          "loginUsername"
-        ).value =
-          document.getElementById(
-            "registerUsername"
-          ).value;
-
-      },800);
-
-    }
-    else{
-
-      registerStatus.textContent =
-        data.message || "Đăng ký thất bại";
+      },700);
 
     }
 
@@ -717,13 +608,13 @@ function handleMessage(data){
 
   /* LOGOUT */
 
-  if(data.type === "logout-result"){
+  if(data.type==="logout-result"){
 
     localStorage.removeItem(
       "wifiCallSession"
     );
 
-    username = "";
+    username="";
 
     showLogin();
 
@@ -733,7 +624,7 @@ function handleMessage(data){
 
   /* CHAT */
 
-  if(data.type === "chat"){
+  if(data.type==="chat"){
 
     addMessage(data.message);
 
@@ -741,64 +632,62 @@ function handleMessage(data){
   }
 
 
-  /* WEBRTC */
+  /* CALL */
 
-  if(data.type === "peer-joined"){
+  if(data.type==="peer-joined"){
 
-    callStatus.textContent =
-      "👤 Có người đã vào phòng";
+    document.getElementById("callInfo")
+      .textContent=
+      "👤 Có người vào phòng";
 
     return;
   }
 
-  if(data.type === "peer-left"){
-
-    callStatus.textContent =
-      "👤 Người kia đã rời phòng";
+  if(data.type==="peer-left"){
 
     closePeer();
+
+    document.getElementById("callInfo")
+      .textContent=
+      "👤 Người kia đã rời phòng";
 
     return;
   }
 
 
   if(
-    data.type === "offer" ||
-    data.type === "answer" ||
-    data.type === "ice-candidate"
+    data.type==="offer" ||
+    data.type==="answer" ||
+    data.type==="ice-candidate"
   ){
 
-    handleWebRTC(data);
+    handleRTC(data);
 
-    return;
   }
 
 }
 
 
 /* =========================
-   REGISTER
+   ĐĂNG KÝ
 ========================= */
 
 function register(){
 
-  const user =
+  const user=
+    document.getElementById("registerUser")
+      .value.trim();
+
+  const pass=
+    document.getElementById("registerPass")
+      .value;
+
+  if(!user||!pass){
+
     document.getElementById(
-      "registerUsername"
-    ).value.trim();
-
-  const pass =
-    document.getElementById(
-      "registerPassword"
-    ).value;
-
-  registerStatus.textContent =
-    "Đang đăng ký...";
-
-  if(!user || !pass){
-
-    registerStatus.textContent =
-      "Vui lòng nhập đầy đủ";
+      "registerStatus"
+    ).textContent=
+      "Nhập đầy đủ thông tin";
 
     return;
   }
@@ -817,30 +706,32 @@ function register(){
 
 
 /* =========================
-   LOGIN
+   ĐĂNG NHẬP
 ========================= */
 
 function login(){
 
-  const user =
+  const user=
+    document.getElementById("loginUser")
+      .value.trim();
+
+  const pass=
+    document.getElementById("loginPass")
+      .value;
+
+  if(!user||!pass){
+
     document.getElementById(
-      "loginUsername"
-    ).value.trim();
-
-  const pass =
-    document.getElementById(
-      "loginPassword"
-    ).value;
-
-  if(!user || !pass){
-
-    loginStatus.textContent =
-      "Vui lòng nhập tài khoản và mật khẩu";
+      "loginStatus"
+    ).textContent=
+      "Nhập tài khoản và mật khẩu";
 
     return;
   }
 
-  loginStatus.textContent =
+  document.getElementById(
+    "loginStatus"
+  ).textContent=
     "Đang đăng nhập...";
 
   ws.send(JSON.stringify({
@@ -857,12 +748,12 @@ function login(){
 
 
 /* =========================
-   AUTO LOGIN
+   TỰ ĐĂNG NHẬP
 ========================= */
 
-function tryAutoLogin(){
+function autoLogin(){
 
-  const saved =
+  const saved=
     localStorage.getItem(
       "wifiCallSession"
     );
@@ -879,10 +770,9 @@ function tryAutoLogin(){
 
   try{
 
-    session = JSON.parse(saved);
+    session=JSON.parse(saved);
 
-  }
-  catch{
+  }catch{
 
     localStorage.removeItem(
       "wifiCallSession"
@@ -909,8 +799,6 @@ function tryAutoLogin(){
 
   }
 
-  pendingSession = true;
-
   ws.send(JSON.stringify({
 
     type:"session-login",
@@ -925,56 +813,24 @@ function tryAutoLogin(){
 
 
 /* =========================
-   LOGOUT
-========================= */
-
-function logout(){
-
-  if(ws && ws.readyState === WebSocket.OPEN){
-
-    ws.send(JSON.stringify({
-
-      type:"logout"
-
-    }));
-
-  }
-  else{
-
-    localStorage.removeItem(
-      "wifiCallSession"
-    );
-
-    username="";
-
-    showLogin();
-
-  }
-
-}
-
-
-/* =========================
-   ROOM
+   PHÒNG
 ========================= */
 
 function joinRoom(){
 
-  const room =
-    document.getElementById(
-      "roomInput"
-    ).value.trim();
+  const room=
+    document.getElementById("room")
+      .value.trim();
 
   if(!room){
 
-    roomStatus.textContent =
-      "⚠️ Nhập tên phòng";
+    alert("Nhập tên phòng");
 
     return;
 
   }
 
-  currentRoom = room;
+  currentRoom=room;
 
   ws.send(JSON.stringify({
 
@@ -984,11 +840,9 @@ function joinRoom(){
 
   }));
 
-  roomStatus.textContent =
-    "🟢 Đang ở phòng: " + room;
-
-  callStatus.textContent =
-    "Sẵn sàng gọi";
+  document.getElementById("roomInfo")
+    .textContent=
+    "🟢 Phòng: "+room;
 
 }
 
@@ -999,19 +853,16 @@ function joinRoom(){
 
 function sendMessage(){
 
-  const input =
-    document.getElementById(
-      "messageInput"
-    );
+  const input=
+    document.getElementById("message");
 
-  const text =
-    input.value.trim();
+  const text=input.value.trim();
 
-  if(!text) return;
+  if(!text)return;
 
   if(!currentRoom){
 
-    alert("Hãy vào phòng trước!");
+    alert("Vào phòng trước");
 
     return;
 
@@ -1030,60 +881,56 @@ function sendMessage(){
 }
 
 
-function addMessage(message){
+function addMessage(m){
 
-  const div =
+  const div=
     document.createElement("div");
 
-  div.className =
-    "message";
+  div.className="msg";
 
-  if(message.from === username){
-
+  if(m.from===username)
     div.classList.add("me");
 
-  }
-
-  const name =
+  const name=
     document.createElement("div");
 
-  name.className =
-    "message-name";
+  name.className="name";
 
-  name.textContent =
-    message.from;
+  name.textContent=m.from;
 
-  const text =
+  const text=
     document.createElement("div");
 
-  text.textContent =
-    message.text;
+  text.textContent=m.text;
 
-  const time =
+  const time=
     document.createElement("div");
 
-  time.className =
-    "message-time";
+  time.className="time";
 
-  time.textContent =
-    new Date(
-      message.time
-    ).toLocaleTimeString(
-      "vi-VN",
-      {
-        hour:"2-digit",
-        minute:"2-digit"
-      }
-    );
+  time.textContent=
+    new Date(m.time)
+      .toLocaleTimeString(
+        "vi-VN",
+        {
+          hour:"2-digit",
+          minute:"2-digit"
+        }
+      );
 
-  div.appendChild(name);
-  div.appendChild(text);
-  div.appendChild(time);
+  div.append(
+    name,
+    text,
+    time
+  );
 
-  chatBox.appendChild(div);
+  const chat=
+    document.getElementById("chat");
 
-  chatBox.scrollTop =
-    chatBox.scrollHeight;
+  chat.appendChild(div);
+
+  chat.scrollTop=
+    chat.scrollHeight;
 
 }
 
@@ -1092,27 +939,21 @@ function addMessage(message){
    WEBRTC
 ========================= */
 
-const rtcConfig = {
-
+const rtcConfig={
   iceServers:[
-
     {
       urls:
-        "stun:stun.l.google.com:19302"
+      "stun:stun.l.google.com:19302"
     }
-
   ]
-
 };
 
 
-async function joinCall(){
+async function startCall(){
 
   if(!currentRoom){
 
-    alert(
-      "Hãy vào phòng trước!"
-    );
+    alert("Vào phòng trước");
 
     return;
 
@@ -1120,31 +961,41 @@ async function joinCall(){
 
   try{
 
-    localStream =
-      await navigator.mediaDevices.getUserMedia({
+    localStream=
+      await navigator.mediaDevices
+        .getUserMedia({
+          audio:true,
+          video:false
+        });
 
-        audio:true,
-        video:false
+    await createPeer();
 
-      });
+    const offer=
+      await peer.createOffer();
 
-    callStatus.textContent =
-      "🎤 Micro đã bật";
+    await peer.setLocalDescription(
+      offer
+    );
 
-    await createPeerConnection();
+    ws.send(JSON.stringify({
 
-    await createOffer();
+      type:"offer",
+
+      offer:offer
+
+    }));
+
+    document.getElementById("callInfo")
+      .textContent=
+      "📞 Đang gọi...";
 
   }
-  catch(error){
+  catch(e){
 
-    console.error(error);
-
-    callStatus.textContent =
-      "❌ Không thể bật microphone";
+    console.error(e);
 
     alert(
-      "Hãy cho phép trình duyệt sử dụng microphone."
+      "Không thể sử dụng microphone"
     );
 
   }
@@ -1152,15 +1003,11 @@ async function joinCall(){
 }
 
 
-async function createPeerConnection(){
+async function createPeer(){
 
-  if(peerConnection){
+  if(peer)peer.close();
 
-    peerConnection.close();
-
-  }
-
-  peerConnection =
+  peer=
     new RTCPeerConnection(
       rtcConfig
     );
@@ -1171,7 +1018,7 @@ async function createPeerConnection(){
       .getTracks()
       .forEach(track=>{
 
-        peerConnection.addTrack(
+        peer.addTrack(
           track,
           localStream
         );
@@ -1180,121 +1027,58 @@ async function createPeerConnection(){
 
   }
 
-  peerConnection.onicecandidate =
-    event =>{
+  peer.onicecandidate=e=>{
 
-      if(event.candidate){
+    if(e.candidate){
 
-        ws.send(JSON.stringify({
+      ws.send(JSON.stringify({
 
-          type:"ice-candidate",
+        type:"ice-candidate",
 
-          candidate:event.candidate
+        candidate:e.candidate
 
-        }));
-
-      }
-
-    };
-
-
-  peerConnection.ontrack =
-    event =>{
-
-      const audio =
-        document.getElementById(
-          "remoteAudio"
-        );
-
-      audio.srcObject =
-        event.streams[0];
-
-      audio.play().catch(()=>{});
-
-      callStatus.textContent =
-        "🔊 Đang gọi";
-
-    };
-
-
-  peerConnection.onconnectionstatechange =
-    ()=>{
-
-      if(!peerConnection)
-        return;
-
-      const state =
-        peerConnection.connectionState;
-
-      if(state === "connected"){
-
-        callStatus.textContent =
-          "🟢 Đang gọi";
-
-      }
-
-      if(
-        state === "disconnected" ||
-        state === "failed"
-      ){
-
-        callStatus.textContent =
-          "🔴 Cuộc gọi bị ngắt";
-
-      }
-
-    };
-
-}
-
-
-async function createOffer(){
-
-  if(!peerConnection){
-
-    await createPeerConnection();
-
-  }
-
-  const offer =
-    await peerConnection.createOffer();
-
-  await peerConnection.setLocalDescription(
-    offer
-  );
-
-  ws.send(JSON.stringify({
-
-    type:"offer",
-
-    offer:offer
-
-  }));
-
-}
-
-
-async function handleWebRTC(data){
-
-  try{
-
-    if(!peerConnection){
-
-      await createPeerConnection();
+      }));
 
     }
 
+  };
 
-    if(data.type === "offer"){
+  peer.ontrack=e=>{
 
-      await peerConnection.setRemoteDescription(
+    const audio=
+      document.getElementById("remote");
+
+    audio.srcObject=
+      e.streams[0];
+
+    audio.play().catch(()=>{});
+
+    document.getElementById("callInfo")
+      .textContent=
+      "🟢 Đang gọi";
+
+  };
+
+}
+
+
+async function handleRTC(data){
+
+  try{
+
+    if(!peer)
+      await createPeer();
+
+    if(data.type==="offer"){
+
+      await peer.setRemoteDescription(
         data.offer
       );
 
-      const answer =
-        await peerConnection.createAnswer();
+      const answer=
+        await peer.createAnswer();
 
-      await peerConnection.setLocalDescription(
+      await peer.setLocalDescription(
         answer
       );
 
@@ -1306,29 +1090,21 @@ async function handleWebRTC(data){
 
       }));
 
-      callStatus.textContent =
-        "📞 Đã nhận cuộc gọi";
-
     }
 
+    if(data.type==="answer"){
 
-    if(data.type === "answer"){
-
-      await peerConnection.setRemoteDescription(
+      await peer.setRemoteDescription(
         data.answer
       );
 
-      callStatus.textContent =
-        "🟢 Đã kết nối";
-
     }
 
-
-    if(data.type === "ice-candidate"){
+    if(data.type==="ice-candidate"){
 
       if(data.candidate){
 
-        await peerConnection.addIceCandidate(
+        await peer.addIceCandidate(
           data.candidate
         );
 
@@ -1337,12 +1113,9 @@ async function handleWebRTC(data){
     }
 
   }
-  catch(error){
+  catch(e){
 
-    console.error(
-      "WebRTC error:",
-      error
-    );
+    console.error(e);
 
   }
 
@@ -1350,33 +1123,30 @@ async function handleWebRTC(data){
 
 
 /* =========================
-   MICROPHONE
+   MIC
 ========================= */
 
 function toggleMic(){
 
   if(!localStream){
 
-    alert(
-      "Bạn chưa bắt đầu cuộc gọi."
-    );
+    alert("Chưa gọi");
 
     return;
 
   }
 
-  const track =
+  const track=
     localStream.getAudioTracks()[0];
 
-  if(!track) return;
+  if(!track)return;
 
-  track.enabled =
+  track.enabled=
     !track.enabled;
 
-  document.getElementById(
-    "micBtn"
-  ).textContent =
-    track.enabled
+  document.getElementById("mic")
+    .textContent=
+      track.enabled
       ? "🎤 Mic"
       : "🔇 Mic tắt";
 
@@ -1384,7 +1154,7 @@ function toggleMic(){
 
 
 /* =========================
-   HANG UP
+   CÚP MÁY
 ========================= */
 
 function hangup(){
@@ -1393,43 +1163,31 @@ function hangup(){
 
     localStream
       .getTracks()
-      .forEach(track=>{
-        track.stop();
-      });
+      .forEach(t=>t.stop());
 
     localStream=null;
 
   }
 
-  if(peerConnection){
+  closePeer();
 
-    peerConnection.close();
+  document.getElementById("remote")
+    .srcObject=null;
 
-    peerConnection=null;
-
-  }
-
-  document.getElementById(
-    "remoteAudio"
-  ).srcObject=null;
-
-  callStatus.textContent =
-    "Đã kết thúc cuộc gọi";
+  document.getElementById("callInfo")
+    .textContent=
+    "Đã kết thúc";
 
 }
 
-
-/* =========================
-   CLOSE PEER
-========================= */
 
 function closePeer(){
 
-  if(peerConnection){
+  if(peer){
 
-    peerConnection.close();
+    peer.close();
 
-    peerConnection=null;
+    peer=null;
 
   }
 
@@ -1437,7 +1195,34 @@ function closePeer(){
 
 
 /* =========================
-   START
+   ĐĂNG XUẤT
+========================= */
+
+function logout(){
+
+  localStorage.removeItem(
+    "wifiCallSession"
+  );
+
+  if(ws &&
+     ws.readyState===WebSocket.OPEN){
+
+    ws.send(JSON.stringify({
+      type:"logout"
+    }));
+
+  }
+  else{
+
+    showLogin();
+
+  }
+
+}
+
+
+/* =========================
+   CHẠY APP
 ========================= */
 
 async function start(){
@@ -1446,7 +1231,29 @@ async function start(){
 
     await connect();
 
+    autoLogin();
+
+  }
+  catch(e){
+
     /*
-     * Sau khi WebSocket mở,
-     * kiểm tra token đã lưu.
-    
+     * Không để app treo mãi.
+     */
+
+    showLogin();
+
+    document.getElementById(
+      "loginStatus"
+    ).textContent=
+      "Máy chủ đang khởi động, bạn có thể thử lại.";
+
+  }
+
+}
+
+start();
+
+</script>
+
+</body>
+  </html>
