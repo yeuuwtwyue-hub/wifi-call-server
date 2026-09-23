@@ -1,12 +1,13 @@
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { WebSocketServer, WebSocket } from "ws";
-import crypto from "node:crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const PORT = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, "data.json");
 
@@ -38,291 +39,411 @@ function hashPassword(password) {
     .digest("hex");
 }
 
+/* ================= HTTP ================= */
 
-/* =========================
-   WEB SERVER
-========================= */
+const server = http.createServer((req, res) => {
 
-const server = http.createServer(
-  (req, res) => {
+  let url = req.url.split("?")[0];
 
-    let url =
-      req.url.split("?")[0];
-
-    if (url === "/") {
-      url = "/index.html";
-    }
-
-    const publicDir =
-      path.join(__dirname, "public");
-
-    const filePath =
-      path.join(publicDir, url);
-
-    if (!filePath.startsWith(publicDir)) {
-      res.writeHead(403);
-      return res.end("Forbidden");
-    }
-
-    fs.readFile(
-      filePath,
-      (err, data) => {
-
-        if (err) {
-          res.writeHead(404);
-          return res.end("Not Found");
-        }
-
-        let type =
-          "text/html; charset=utf-8";
-
-        if (filePath.endsWith(".css")) {
-          type = "text/css";
-        }
-
-        if (filePath.endsWith(".js")) {
-          type = "application/javascript";
-        }
-
-        res.writeHead(200, {
-          "Content-Type": type
-        });
-
-        res.end(data);
-
-      }
-    );
-
+  if (url === "/") {
+    url = "/index.html";
   }
-);
 
+  const publicDir =
+    path.join(__dirname, "public");
 
-/* =========================
-   WEBSOCKET
-========================= */
+  const filePath =
+    path.join(publicDir, url);
+
+  if (!filePath.startsWith(publicDir)) {
+    res.writeHead(403);
+    return res.end("Forbidden");
+  }
+
+  fs.readFile(filePath, (err, data) => {
+
+    if (err) {
+      res.writeHead(404);
+      return res.end("Not Found");
+    }
+
+    let type =
+      "text/html; charset=utf-8";
+
+    if (filePath.endsWith(".css")) {
+      type = "text/css";
+    }
+
+    if (filePath.endsWith(".js")) {
+      type = "application/javascript";
+    }
+
+    res.writeHead(200, {
+      "Content-Type": type
+    });
+
+    res.end(data);
+
+  });
+
+});
+
+/* ================= WEBSOCKET ================= */
 
 const wss =
   new WebSocketServer({
     server
   });
 
-const rooms =
-  new Map();
+const rooms = new Map();
 
+/* ================= CONNECTION ================= */
 
-wss.on(
-  "connection",
-  socket => {
+wss.on("connection", socket => {
 
-    socket.on(
-      "message",
-      data => {
+  socket.user = null;
+  socket.room = null;
 
-        let message;
+  socket.on("message", raw => {
 
-        try {
+    let message;
 
-          message =
-            JSON.parse(
-              data.toString()
-            );
+    try {
+      message =
+        JSON.parse(raw.toString());
+    } catch {
+      return;
+    }
 
-        } catch {
+    /* ================= REGISTER ================= */
 
-          return;
+    if (message.type === "register") {
 
-        }
+      const db = loadData();
 
+      const username =
+        String(message.username || "")
+          .trim();
 
-        /* ĐĂNG KÝ */
+      const password =
+        String(message.password || "");
 
-        if (
-          message.type ===
-          "register"
-        ) {
+      if (!username || !password) {
 
-          const db =
-            loadData();
+        socket.send(
+          JSON.stringify({
+            type: "register-result",
+            success: false,
+            message:
+              "Vui lòng nhập đầy đủ"
+          })
+        );
 
-          if (
-            !message.username ||
-            !message.password
-          ) {
+        return;
+      }
 
-            socket.send(
-              JSON.stringify({
-                type:
-                  "register-result",
-                success:false,
-                message:
-                  "Thiếu tên đăng nhập hoặc mật khẩu"
-              })
-            );
+      if (username.length < 3) {
 
-            return;
-          }
+        socket.send(
+          JSON.stringify({
+            type: "register-result",
+            success: false,
+            message:
+              "Tên đăng nhập phải có ít nhất 3 ký tự"
+          })
+        );
 
+        return;
+      }
 
-          const exists =
-            db.users.find(
-              user =>
-                user.username ===
-                message.username
-            );
+      if (password.length < 4) {
 
+        socket.send(
+          JSON.stringify({
+            type: "register-result",
+            success: false,
+            message:
+              "Mật khẩu phải có ít nhất 4 ký tự"
+          })
+        );
 
-          if (exists) {
+        return;
+      }
 
-            socket.send(
-              JSON.stringify({
-                type:
-                  "register-result",
-                success:false,
-                message:
-                  "Tên đăng nhập đã tồn tại"
-              })
-            );
+      const exists =
+        db.users.find(
+          user =>
+            user.username.toLowerCase() ===
+            username.toLowerCase()
+        );
 
-            return;
-          }
+      if (exists) {
 
+        socket.send(
+          JSON.stringify({
+            type: "register-result",
+            success: false,
+            message:
+              "Tên đăng nhập đã tồn tại"
+          })
+        );
 
-          db.users.push({
+        return;
+      }
 
-            id:
-              crypto.randomUUID(),
+      const user = {
+        id: crypto.randomUUID(),
+        username,
+        password:
+          hashPassword(password)
+      };
 
-            username:
-              message.username,
+      db.users.push(user);
 
-            password:
-              hashPassword(
-                message.password
-              )
+      saveData(db);
 
-          });
+      socket.send(
+        JSON.stringify({
+          type: "register-result",
+          success: true,
+          message:
+            "Đăng ký thành công"
+        })
+      );
 
+      return;
+    }
 
-          saveData(db);
+    /* ================= LOGIN ================= */
 
+    if (message.type === "login") {
 
-          socket.send(
-            JSON.stringify({
+      const db = loadData();
 
-              type:
-                "register-result",
+      const username =
+        String(message.username || "")
+          .trim();
 
-              success:true,
+      const password =
+        String(message.password || "");
 
-              message:
-                "Đăng ký thành công"
+      const user =
+        db.users.find(
+          item =>
+            item.username === username &&
+            item.password ===
+              hashPassword(password)
+        );
 
-            })
+      if (!user) {
+
+        socket.send(
+          JSON.stringify({
+            type: "login-result",
+            success: false,
+            message:
+              "Sai tài khoản hoặc mật khẩu"
+          })
+        );
+
+        return;
+      }
+
+      socket.user = user.username;
+
+      socket.send(
+        JSON.stringify({
+          type: "login-result",
+          success: true,
+          username: user.username
+        })
+      );
+
+      return;
+    }
+
+    /* ================= AUTO LOGIN ================= */
+
+    /*
+      Bản này vẫn xác thực lại tài khoản
+      qua username + token phiên.
+
+      Token được tạo khi client yêu cầu
+      và không chứa mật khẩu.
+    */
+
+    if (message.type === "session-login") {
+
+      const db = loadData();
+
+      const username =
+        String(message.username || "")
+          .trim();
+
+      const token =
+        String(message.token || "");
+
+      if (!username || !token) {
+
+        socket.send(
+          JSON.stringify({
+            type: "session-result",
+            success: false
+          })
+        );
+
+        return;
+      }
+
+      const user =
+        db.users.find(
+          item =>
+            item.username === username &&
+            item.sessionToken === token
+        );
+
+      if (!user) {
+
+        socket.send(
+          JSON.stringify({
+            type: "session-result",
+            success: false
+          })
+        );
+
+        return;
+      }
+
+      socket.user =
+        user.username;
+
+      socket.send(
+        JSON.stringify({
+          type: "session-result",
+          success: true,
+          username:
+            user.username
+        })
+      );
+
+      return;
+    }
+
+    /* ================= CREATE SESSION ================= */
+
+    if (message.type === "create-session") {
+
+      const db = loadData();
+
+      const username =
+        String(message.username || "")
+          .trim();
+
+      const password =
+        String(message.password || "");
+
+      const user =
+        db.users.find(
+          item =>
+            item.username === username &&
+            item.password ===
+              hashPassword(password)
+        );
+
+      if (!user) {
+
+        socket.send(
+          JSON.stringify({
+            type: "session-created",
+            success: false
+          })
+        );
+
+        return;
+      }
+
+      const token =
+        crypto.randomBytes(32)
+          .toString("hex");
+
+      user.sessionToken = token;
+
+      saveData(db);
+
+      socket.user =
+        user.username;
+
+      socket.send(
+        JSON.stringify({
+          type: "session-created",
+          success: true,
+          username:
+            user.username,
+          token
+        })
+      );
+
+      return;
+    }
+
+    /* ================= LOGOUT ================= */
+
+    if (message.type === "logout") {
+
+      const db = loadData();
+
+      if (socket.user) {
+
+        const user =
+          db.users.find(
+            item =>
+              item.username ===
+              socket.user
           );
 
-          return;
+        if (user) {
+          delete user.sessionToken;
         }
 
+        saveData(db);
+      }
 
-        /* ĐĂNG NHẬP */
+      socket.user = null;
 
-        if (
-          message.type ===
-          "login"
-        ) {
+      socket.send(
+        JSON.stringify({
+          type: "logout-result",
+          success: true
+        })
+      );
 
-          const db =
-            loadData();
+      return;
+    }
 
+    /* ================= JOIN ROOM ================= */
 
-          const user =
-            db.users.find(
-              user =>
-                user.username ===
-                  message.username &&
-                user.password ===
-                  hashPassword(
-                    message.password
-                  )
-            );
+    if (message.type === "join") {
 
+      const roomName =
+        String(message.room || "")
+          .trim();
 
-          if (!user) {
+      if (!roomName) {
+        return;
+      }
 
-            socket.send(
-              JSON.stringify({
+      /* rời phòng cũ */
 
-                type:
-                  "login-result",
+      if (socket.room) {
 
-                success:false,
+        const oldRoom =
+          rooms.get(socket.room);
 
-                message:
-                  "Sai tài khoản hoặc mật khẩu"
+        if (oldRoom) {
 
-              })
-            );
+          oldRoom.delete(socket);
 
-            return;
-          }
-
-
-          socket.user =
-            user.username;
-
-
-          socket.send(
-            JSON.stringify({
-
-              type:
-                "login-result",
-
-              success:true,
-
-              username:
-                user.username
-
-            })
-          );
-
-          return;
-        }
-
-
-        /* VÀO PHÒNG */
-
-        if (
-          message.type ===
-          "join"
-        ) {
-
-          socket.room =
-            message.room;
-
-
-          if (
-            !rooms.has(
-              socket.room
-            )
-          ) {
-
-            rooms.set(
-              socket.room,
-              new Set()
-            );
-
-          }
-
-
-          const room =
-            rooms.get(
-              socket.room
-            );
-
-
-          for (
-            const peer of room
-          ) {
+          for (const peer of oldRoom) {
 
             if (
               peer.readyState ===
@@ -331,8 +452,7 @@ wss.on(
 
               peer.send(
                 JSON.stringify({
-                  type:
-                    "peer-joined"
+                  type: "peer-left"
                 })
               );
 
@@ -340,178 +460,194 @@ wss.on(
 
           }
 
-
-          room.add(socket);
-
-          return;
-        }
-
-
-        /* CHAT */
-
-        if (
-          message.type ===
-          "chat"
-        ) {
-
-          const db =
-            loadData();
-
-
-          const chatMessage = {
-
-            id:
-              crypto.randomUUID(),
-
-            from:
-              socket.user ||
-              "Khách",
-
-            text:
-              message.text,
-
-            time:
-              Date.now()
-
-          };
-
-
-          db.messages.push(
-            chatMessage
-          );
-
-          saveData(db);
-
-
-          const room =
-            rooms.get(
-              socket.room
-            );
-
-
-          if (room) {
-
-            for (
-              const peer of room
-            ) {
-
-              if (
-                peer.readyState ===
-                WebSocket.OPEN
-              ) {
-
-                peer.send(
-                  JSON.stringify({
-
-                    type:
-                      "chat",
-
-                    message:
-                      chatMessage
-
-                  })
-                );
-
-              }
-
-            }
-
+          if (oldRoom.size === 0) {
+            rooms.delete(socket.room);
           }
-
-          return;
         }
+      }
 
+      socket.room =
+        roomName;
 
-        /* CHUYỂN WEBRTC */
+      if (!rooms.has(roomName)) {
 
-        const room =
-          rooms.get(
-            socket.room
-          );
-
-
-        if (!room) return;
-
-
-        for (
-          const peer of room
-        ) {
-
-          if (
-            peer !== socket &&
-            peer.readyState ===
-            WebSocket.OPEN
-          ) {
-
-            peer.send(
-              data.toString()
-            );
-
-          }
-
-        }
+        rooms.set(
+          roomName,
+          new Set()
+        );
 
       }
-    );
 
+      const room =
+        rooms.get(roomName);
 
-    socket.on(
-      "close",
-      () => {
-
-        const room =
-          rooms.get(
-            socket.room
-          );
-
-
-        if (!room) return;
-
-
-        room.delete(socket);
-
-
-        for (
-          const peer of room
-        ) {
-
-          if (
-            peer.readyState ===
-            WebSocket.OPEN
-          ) {
-
-            peer.send(
-              JSON.stringify({
-                type:
-                  "peer-left"
-              })
-            );
-
-          }
-
-        }
-
+      for (const peer of room) {
 
         if (
-          room.size === 0
+          peer.readyState ===
+          WebSocket.OPEN
         ) {
 
-          rooms.delete(
-            socket.room
+          peer.send(
+            JSON.stringify({
+              type: "peer-joined"
+            })
           );
 
         }
 
       }
-    );
 
-  }
-);
+      room.add(socket);
+
+      return;
+    }
+
+    /* ================= CHAT ================= */
+
+    if (message.type === "chat") {
+
+      if (!socket.user) {
+        return;
+      }
+
+      if (!socket.room) {
+        return;
+      }
+
+      const text =
+        String(message.text || "")
+          .trim();
+
+      if (!text) {
+        return;
+      }
+
+      const db = loadData();
+
+      const chatMessage = {
+        id:
+          crypto.randomUUID(),
+
+        from:
+          socket.user,
+
+        text,
+
+        time:
+          Date.now(),
+
+        room:
+          socket.room
+      };
+
+      db.messages.push(
+        chatMessage
+      );
+
+      saveData(db);
+
+      const room =
+        rooms.get(socket.room);
+
+      if (!room) {
+        return;
+      }
+
+      for (const peer of room) {
+
+        if (
+          peer.readyState ===
+          WebSocket.OPEN
+        ) {
+
+          peer.send(
+            JSON.stringify({
+              type: "chat",
+              message:
+                chatMessage
+            })
+          );
+
+        }
+
+      }
+
+      return;
+    }
+
+    /* ================= WEBRTC ================= */
+
+    const room =
+      rooms.get(socket.room);
+
+    if (!room) {
+      return;
+    }
+
+    for (const peer of room) {
+
+      if (
+        peer !== socket &&
+        peer.readyState ===
+        WebSocket.OPEN
+      ) {
+
+        peer.send(
+          raw.toString()
+        );
+
+      }
+
+    }
+
+  });
 
 
-/* =========================
-   START SERVER
-========================= */
+  /* ================= CLOSE ================= */
+
+  socket.on("close", () => {
+
+    const room =
+      rooms.get(socket.room);
+
+    if (!room) {
+      return;
+    }
+
+    room.delete(socket);
+
+    for (const peer of room) {
+
+      if (
+        peer.readyState ===
+        WebSocket.OPEN
+      ) {
+
+        peer.send(
+          JSON.stringify({
+            type: "peer-left"
+          })
+        );
+
+      }
+
+    }
+
+    if (room.size === 0) {
+
+      rooms.delete(
+        socket.room
+      );
+
+    }
+
+  });
+
+});
+
+
+/* ================= START ================= */
 
 server.listen(
   PORT,
