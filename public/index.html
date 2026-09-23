@@ -2,628 +2,1153 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Việt Call</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WiFi Call</title>
 
 <style>
-*{box-sizing:border-box}
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif
+}
 
 body{
-  margin:0;
-  min-height:100vh;
-  background:#0b0f17;
-  color:white;
-  font-family:Arial,sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.app{
-  width:94%;
-  max-width:430px;
-  background:#151b26;
-  border-radius:24px;
-  padding:24px;
-  box-shadow:0 15px 50px #0009;
-}
-
-h1{
-  text-align:center;
-  margin:0 0 8px;
-}
-
-.sub{
-  text-align:center;
-  color:#8f9aaa;
-  margin-bottom:24px;
-}
-
-input{
-  width:100%;
-  padding:15px;
-  margin:7px 0;
-  border:1px solid #303949;
-  border-radius:13px;
-  background:#0d121b;
-  color:white;
-  font-size:16px;
-}
-
-button{
-  width:100%;
-  padding:14px;
-  margin-top:10px;
-  border:0;
-  border-radius:13px;
-  font-size:16px;
-  font-weight:bold;
-  color:white;
-  background:#287cff;
-}
-
-button:disabled{
-  opacity:.45;
-}
-
-.secondary{
-  background:#303846;
-}
-
-.danger{
-  background:#e5484d;
-}
-
-#message{
-  min-height:22px;
-  text-align:center;
-  margin:15px 0;
-  color:#70e6a0;
+  background:#eef2f7;
+  height:100vh;
+  overflow:hidden
 }
 
 .page{
   display:none;
+  width:100%;
+  height:100vh
 }
 
 .page.active{
-  display:block;
+  display:flex
 }
 
-.user{
+/* AUTH */
+
+.auth{
+  justify-content:center;
+  align-items:center;
+  padding:20px
+}
+
+.box{
+  width:100%;
+  max-width:380px;
+  background:white;
+  padding:25px;
+  border-radius:22px;
+  box-shadow:0 8px 30px #0002
+}
+
+.box h1{
   text-align:center;
-  color:#70e6a0;
-  margin-bottom:20px;
+  margin-bottom:20px
 }
 
-.callBox{
-  margin-top:20px;
-  padding-top:20px;
-  border-top:1px solid #303949;
+.box input{
+  width:100%;
+  padding:14px;
+  margin:7px 0;
+  border:1px solid #ddd;
+  border-radius:12px;
+  font-size:16px;
+  outline:none
+}
+
+.box button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:0;
+  border-radius:12px;
+  background:#1683ff;
+  color:white;
+  font-size:16px
+}
+
+.link{
+  text-align:center;
+  margin-top:16px;
+  color:#1683ff;
+  cursor:pointer
+}
+
+.status{
+  text-align:center;
+  margin-top:12px;
+  min-height:20px
+}
+
+/* HOME */
+
+.home{
+  flex-direction:column
+}
+
+.header{
+  height:62px;
+  background:#1683ff;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px
+}
+
+.header h2{
+  font-size:21px
+}
+
+.header button{
+  border:0;
+  background:#ffffff25;
+  color:white;
+  padding:9px 12px;
+  border-radius:10px
+}
+
+.content{
+  flex:1;
+  display:flex;
+  min-height:0
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  width:30%;
+  min-width:120px;
+  background:white;
+  border-right:1px solid #ddd
+}
+
+.sidebar-title{
+  padding:16px;
+  font-weight:bold
+}
+
+.chat-user{
+  padding:14px;
+  border-top:1px solid #eee;
+  cursor:pointer
+}
+
+/* CHAT */
+
+.chat{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column
+}
+
+.chat-top{
+  padding:14px;
+  background:white;
+  border-bottom:1px solid #ddd;
+  font-weight:bold
+}
+
+.messages{
+  flex:1;
+  padding:15px;
+  overflow-y:auto
+}
+
+.message{
+  width:max-content;
+  max-width:75%;
+  padding:10px 13px;
+  margin:7px 0;
+  border-radius:16px;
+  background:white;
+  box-shadow:0 1px 3px #0001;
+  word-break:break-word
+}
+
+.message.me{
+  margin-left:auto;
+  background:#1683ff;
+  color:white
+}
+
+.message-name{
+  font-size:11px;
+  opacity:.7;
+  margin-bottom:3px
+}
+
+.chat-input{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  background:white
+}
+
+.chat-input input{
+  flex:1;
+  min-width:0;
+  padding:13px;
+  border:1px solid #ddd;
+  border-radius:12px;
+  outline:none
+}
+
+.chat-input button{
+  width:55px;
+  border:0;
+  border-radius:12px;
+  background:#1683ff;
+  color:white;
+  font-size:20px
+}
+
+/* CALL */
+
+.call-panel{
+  display:flex;
+  gap:7px;
+  padding:10px;
+  background:white;
+  border-top:1px solid #ddd
+}
+
+.call-panel input{
+  flex:1;
+  min-width:0;
+  padding:11px;
+  border:1px solid #ddd;
+  border-radius:10px
+}
+
+.call-panel button{
+  border:0;
+  border-radius:10px;
+  padding:10px 12px
+}
+
+.call{
+  background:#18a957;
+  color:white
+}
+
+.hang{
+  background:#e53935;
+  color:white
+}
+
+.mic{
+  background:#555;
+  color:white
 }
 
 #callStatus{
-  text-align:center;
-  color:#aeb7c6;
-  margin:15px 0;
+  padding:6px 12px;
+  font-size:13px;
+  background:white;
+  color:#555
 }
 
-.hidden{
-  display:none;
+audio{
+  display:none
 }
 
-.small{
-  text-align:center;
-  color:#697486;
-  font-size:12px;
-  margin-top:20px;
+@media(max-width:600px){
+
+  .sidebar{
+    width:100px;
+    min-width:100px
+  }
+
+  .header h2{
+    font-size:18px
+  }
+
+  .call-panel{
+    flex-wrap:wrap
+  }
+
+  .call-panel input{
+    width:100%;
+    flex-basis:100%
+  }
+
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<!-- ================= LOGIN ================= -->
 
-<!-- ĐĂNG NHẬP -->
-<div id="loginPage" class="page active">
+<div id="loginPage" class="page auth active">
 
-<h1>📞 Việt Call</h1>
+  <div class="box">
 
-<div class="sub">
-Đăng nhập tài khoản
-</div>
+    <h1>💬 WiFi Call</h1>
 
-<input id="loginUser" placeholder="Tên đăng nhập">
+    <input
+      id="loginUser"
+      placeholder="Tên đăng nhập">
 
-<input
-id="loginPass"
-type="password"
-placeholder="Mật khẩu">
+    <input
+      id="loginPass"
+      type="password"
+      placeholder="Mật khẩu">
 
-<button id="loginBtn">
-🔑 Đăng nhập
-</button>
+    <button onclick="login()">
+      Đăng nhập
+    </button>
 
-<button class="secondary" id="showRegister">
-📝 Tạo tài khoản
-</button>
+    <div
+      id="loginStatus"
+      class="status">
+    </div>
 
-</div>
+    <div
+      class="link"
+      onclick="showRegister()">
+      Chưa có tài khoản? Đăng ký
+    </div>
 
-
-<!-- ĐĂNG KÝ -->
-<div id="registerPage" class="page">
-
-<h1>📝 Đăng ký</h1>
-
-<div class="sub">
-Tạo tài khoản Việt Call
-</div>
-
-<input id="registerUser" placeholder="Tên đăng nhập">
-
-<input
-id="registerPass"
-type="password"
-placeholder="Mật khẩu">
-
-<button id="registerBtn">
-✅ Đăng ký
-</button>
-
-<button class="secondary" id="showLogin">
-⬅️ Quay lại đăng nhập
-</button>
+  </div>
 
 </div>
 
 
-<!-- TRANG CHÍNH -->
-<div id="homePage" class="page">
+<!-- ================= REGISTER ================= -->
 
-<h1>💬 Việt Call</h1>
+<div id="registerPage" class="page auth">
 
-<div class="user">
-Xin chào, <span id="username"></span>
-</div>
+  <div class="box">
 
-<input
-id="room"
-placeholder="Mã phòng, ví dụ 1234"
-maxlength="30">
+    <h1>📝 Đăng ký</h1>
 
-<button id="join">
-📞 Tham gia phòng
-</button>
+    <input
+      id="registerUser"
+      placeholder="Tên đăng nhập">
 
-<div id="callBox" class="callBox hidden">
+    <input
+      id="registerPass"
+      type="password"
+      placeholder="Mật khẩu">
 
-<div id="callStatus">
-Chưa kết nối
-</div>
+    <button onclick="register()">
+      Đăng ký
+    </button>
 
-<button
-class="secondary"
-id="mic"
-disabled>
-🎙️ Tắt mic
-</button>
+    <div
+      id="registerStatus"
+      class="status">
+    </div>
 
-<button
-class="danger"
-id="hang"
-disabled>
-🔴 Kết thúc
-</button>
+    <div
+      class="link"
+      onclick="showLogin()">
+      Đã có tài khoản? Đăng nhập
+    </div>
+
+  </div>
 
 </div>
 
-<button
-class="secondary"
-id="logout">
-🚪 Đăng xuất
-</button>
 
-<div class="small">
-Việt Call • Voice Calling
+<!-- ================= HOME ================= -->
+
+<div id="homePage" class="page home">
+
+  <div class="header">
+
+    <h2>💬 WiFi Call</h2>
+
+    <button onclick="logout()">
+      Đăng xuất
+    </button>
+
+  </div>
+
+
+  <div class="content">
+
+    <!-- DANH SÁCH CHAT -->
+
+    <div class="sidebar">
+
+      <div class="sidebar-title">
+        Tin nhắn
+      </div>
+
+      <div class="chat-user">
+        👥 Phòng chat
+      </div>
+
+    </div>
+
+
+    <!-- CHAT -->
+
+    <div class="chat">
+
+      <div class="chat-top">
+        💬 Phòng chat
+      </div>
+
+      <div
+        id="messages"
+        class="messages">
+      </div>
+
+
+      <div class="chat-input">
+
+        <input
+          id="messageInput"
+          placeholder="Nhập tin nhắn..."
+          autocomplete="off"
+          onkeydown="
+            if(event.key==='Enter'){
+              sendMessage()
+            }
+          ">
+
+        <button onclick="sendMessage()">
+          ➤
+        </button>
+
+      </div>
+
+
+      <!-- TRẠNG THÁI GỌI -->
+
+      <div id="callStatus">
+        Chưa gọi
+      </div>
+
+
+      <!-- GỌI -->
+
+      <div class="call-panel">
+
+        <input
+          id="roomInput"
+          placeholder="Tên phòng, ví dụ: 123">
+
+        <button
+          class="call"
+          onclick="joinCall()">
+          📞 Gọi
+        </button>
+
+        <button
+          class="mic"
+          onclick="toggleMic()">
+          🎙️
+        </button>
+
+        <button
+          class="hang"
+          onclick="hangup()">
+          ✖
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
 </div>
 
-</div>
 
-<div id="message"></div>
-
-</div>
+<audio id="remoteAudio" autoplay></audio>
 
 
 <script>
 
+/* ==================================================
+   CẤU HÌNH
+================================================== */
+
 const SERVER =
-"https://wifi-call-server-1.onrender.com";
+  "https://wifi-call-server-1.onrender.com";
 
-let ws = null;
+
+let socket = null;
+
+let username = "";
+
+let currentRoom = "";
+
 let pc = null;
-let stream = null;
-let room = null;
-let currentUser = null;
 
-const $ = id =>
-document.getElementById(id);
+let localStream = null;
 
+let micEnabled = true;
+
+let connectedToCall = false;
+
+
+/* ==================================================
+   HIỂN THỊ TRANG
+================================================== */
 
 function showPage(id){
 
-  document.querySelectorAll(".page")
+  document
+    .querySelectorAll(".page")
     .forEach(page =>
       page.classList.remove("active")
     );
 
-  $(id).classList.add("active");
-
+  document
+    .getElementById(id)
+    .classList.add("active");
 }
 
 
-function message(text,color){
+function showLogin(){
 
-  $("message").textContent = text;
-
-  if(color){
-    $("message").style.color = color;
-  }
-
-}
-
-
-/* =========================
-   ĐĂNG KÝ
-========================= */
-
-$("showRegister").onclick = () => {
-
-  message("");
-
-  showPage("registerPage");
-
-};
-
-
-$("showLogin").onclick = () => {
-
-  message("");
+  document
+    .getElementById("loginStatus")
+    .textContent = "";
 
   showPage("loginPage");
-
-};
-
-
-$("registerBtn").onclick = () => {
-
-  const username =
-    $("registerUser").value.trim();
-
-  const password =
-    $("registerPass").value;
-
-  if(!username || !password){
-
-    message(
-      "⚠️ Nhập đầy đủ thông tin",
-      "#ffcc66"
-    );
-
-    return;
-  }
-
-  const socket =
-    new WebSocket(
-      SERVER.replace(/^http/,"ws")
-    );
-
-  socket.onopen = () => {
-
-    socket.send(JSON.stringify({
-      type:"register",
-      username,
-      password
-    }));
-
-  };
-
-  socket.onmessage = event => {
-
-    const data =
-      JSON.parse(event.data);
-
-    if(data.type === "register-result"){
-
-      message(
-        data.message,
-        data.success
-          ? "#70e6a0"
-          : "#ff7777"
-      );
-
-      if(data.success){
-
-        $("registerUser").value = "";
-        $("registerPass").value = "";
-
-        setTimeout(() => {
-          showPage("loginPage");
-        },700);
-
-      }
-
-      socket.close();
-
-    }
-
-  };
-
-};
-
-
-/* =========================
-   ĐĂNG NHẬP
-========================= */
-
-$("loginBtn").onclick = () => {
-
-  const username =
-    $("loginUser").value.trim();
-
-  const password =
-    $("loginPass").value;
-
-  if(!username || !password){
-
-    message(
-      "⚠️ Nhập tài khoản và mật khẩu",
-      "#ffcc66"
-    );
-
-    return;
-  }
-
-  const socket =
-    new WebSocket(
-      SERVER.replace(/^http/,"ws")
-    );
-
-  socket.onopen = () => {
-
-    socket.send(JSON.stringify({
-      type:"login",
-      username,
-      password
-    }));
-
-  };
-
-  socket.onmessage = event => {
-
-    const data =
-      JSON.parse(event.data);
-
-    if(data.type === "login-result"){
-
-      if(data.success){
-
-        currentUser =
-          data.username;
-
-        $("username").textContent =
-          currentUser;
-
-        $("loginUser").value = "";
-        $("loginPass").value = "";
-
-        message("");
-
-        showPage("homePage");
-
-      }else{
-
-        message(
-          data.message,
-          "#ff7777"
-        );
-
-      }
-
-      socket.close();
-
-    }
-
-  };
-
-};
-
-
-/* =========================
-   GỌI ĐIỆN
-========================= */
-
-function signal(data){
-
-  if(
-    ws &&
-    ws.readyState === WebSocket.OPEN
-  ){
-
-    ws.send(JSON.stringify(data));
-
-  }
-
 }
 
 
-$("join").onclick = async () => {
+function showRegister(){
 
-  room =
-    $("room").value.trim();
+  document
+    .getElementById("registerStatus")
+    .textContent = "";
 
-  if(!room){
+  showPage("registerPage");
+}
 
-    message(
-      "⚠️ Nhập mã phòng",
-      "#ffcc66"
+
+function showHome(){
+
+  showPage("homePage");
+
+  document
+    .getElementById("callStatus")
+    .textContent =
+      "Đã đăng nhập: " + username;
+}
+
+
+/* ==================================================
+   WEBSOCKET
+================================================== */
+
+function connect(){
+
+  const wsURL =
+    SERVER.replace(
+      /^http/,
+      "ws"
     );
 
-    return;
-  }
+  socket =
+    new WebSocket(wsURL);
 
-  try{
 
-    stream =
-      await navigator.mediaDevices
-      .getUserMedia({
-        audio:true,
-        video:false
-      });
+  socket.onopen = () => {
 
-  }catch(error){
-
-    message(
-      "⚠️ Hãy cho phép sử dụng micro",
-      "#ff7777"
+    console.log(
+      "WebSocket connected"
     );
-
-    return;
-
-  }
-
-  const wsUrl =
-    SERVER.replace(/^http/,"ws");
-
-  ws =
-    new WebSocket(wsUrl);
-
-
-  ws.onopen = () => {
-
-    signal({
-      type:"join",
-      room
-    });
-
-    $("callBox")
-      .classList.remove("hidden");
-
-    $("join").disabled = true;
-    $("room").disabled = true;
-
-    $("mic").disabled = false;
-    $("hang").disabled = false;
-
-    $("callStatus").textContent =
-      "🟢 Đã vào phòng, chờ người kia...";
 
   };
 
 
-  ws.onmessage = async event => {
+  socket.onmessage =
+    async event => {
 
-    const message =
-      JSON.parse(event.data);
-
-
-    if(message.type === "offer"){
-
-      await makePC();
-
-      await pc.setRemoteDescription(
-        message.offer
-      );
-
-      const answer =
-        await pc.createAnswer();
-
-      await pc.setLocalDescription(
-        answer
-      );
-
-      signal({
-        type:"answer",
-        room,
-        answer
-      });
-
-    }
-
-
-    else if(message.type === "answer"){
-
-      if(pc){
-
-        await pc.setRemoteDescription(
-          message.answer
-        );
-
-      }
-
-    }
-
-
-    else if(
-      message.type === "candidate" &&
-      pc
-    ){
+      let data;
 
       try{
 
-        await pc.addIceCandidate(
-          message.candidate
+        data =
+          JSON.parse(
+            event.data
+          );
+
+      }catch{
+
+        return;
+
+      }
+
+
+      /* ĐĂNG KÝ */
+
+      if(
+        data.type ===
+        "register-result"
+      ){
+
+        const status =
+          document.getElementById(
+            "registerStatus"
+          );
+
+        status.textContent =
+          data.message;
+
+        if(data.success){
+
+          document
+            .getElementById(
+              "registerUser"
+            )
+            .value = "";
+
+          document
+            .getElementById(
+              "registerPass"
+            )
+            .value = "";
+
+          setTimeout(
+            showLogin,
+            1000
+          );
+
+        }
+
+        return;
+      }
+
+
+      /* ĐĂNG NHẬP */
+
+      if(
+        data.type ===
+        "login-result"
+      ){
+
+        const status =
+          document.getElementById(
+            "loginStatus"
+          );
+
+
+        if(data.success){
+
+          username =
+            data.username;
+
+          status.textContent =
+            "";
+
+          showHome();
+
+        }else{
+
+          status.textContent =
+            data.message;
+
+        }
+
+        return;
+      }
+
+
+      /* CHAT */
+
+      if(
+        data.type ===
+        "chat"
+      ){
+
+        addMessage(
+          data.message
         );
 
-      }catch(error){}
-
-    }
-
-
-    else if(message.type === "peer-joined"){
-
-      await makePC();
-
-      const offer =
-        await pc.createOffer();
-
-      await pc.setLocalDescription(
-        offer
-      );
-
-      signal({
-        type:"offer",
-        room,
-        offer
-      });
-
-    }
+        return;
+      }
 
 
-    else if(message.type === "peer-left"){
+      /* NGƯỜI KHÁC VÀO PHÒNG */
 
-      $("callStatus").textContent =
-        "☎️ Người kia đã rời phòng";
+      if(
+        data.type ===
+        "peer-joined"
+      ){
 
-    }
+        document
+          .getElementById(
+            "callStatus"
+          )
+          .textContent =
+            "📞 Người khác đã vào phòng";
+
+        /*
+          Người vào trước tạo offer.
+        */
+
+        if(
+          pc &&
+          pc.signalingState ===
+          "stable"
+        ){
+
+          await createOffer();
+
+        }
+
+        return;
+      }
+
+
+      /* NGƯỜI KHÁC RỜI */
+
+      if(
+        data.type ===
+        "peer-left"
+      ){
+
+        document
+          .getElementById(
+            "callStatus"
+          )
+          .textContent =
+            "Người kia đã rời cuộc gọi";
+
+        return;
+      }
+
+
+      /* WEBRTC */
+
+      await handleWebRTC(data);
+
+    };
+
+
+  socket.onclose = () => {
+
+    console.log(
+      "WebSocket disconnected"
+    );
 
   };
 
 
-  ws.onerror = () => {
+  socket.onerror = () => {
 
-    $("callStatus").textContent =
-      "❌ Không kết nối được server";
+    console.log(
+      "WebSocket error"
+    );
 
   };
 
-};
+}
 
 
-async function makePC(){
+/* ==================================================
+   ĐĂNG KÝ
+================================================== */
 
-  if(pc) return;
+function register(){
 
+  const user =
+    document
+      .getElementById(
+        "registerUser"
+      )
+      .value
+      .trim();
+
+  const pass =
+    document
+      .getElementById(
+        "registerPass"
+      )
+      .value;
+
+
+  if(!user || !pass){
+
+    document
+      .getElementById(
+        "registerStatus"
+      )
+      .textContent =
+        "Vui lòng nhập đầy đủ";
+
+    return;
+  }
+
+
+  if(!socket ||
+     socket.readyState !==
+     WebSocket.OPEN){
+
+    document
+      .getElementById(
+        "registerStatus"
+      )
+      .textContent =
+        "Đang kết nối server...";
+
+    connect();
+
+    setTimeout(
+      register,
+      1000
+    );
+
+    return;
+  }
+
+
+  socket.send(
+    JSON.stringify({
+
+      type:
+        "register",
+
+      username:
+        user,
+
+      password:
+        pass
+
+    })
+  );
+
+
+  document
+    .getElementById(
+      "registerStatus"
+    )
+    .textContent =
+      "Đang đăng ký...";
+
+}
+
+
+/* ==================================================
+   ĐĂNG NHẬP
+================================================== */
+
+function login(){
+
+  const user =
+    document
+      .getElementById(
+        "loginUser"
+      )
+      .value
+      .trim();
+
+  const pass =
+    document
+      .getElementById(
+        "loginPass"
+      )
+      .value;
+
+
+  if(!user || !pass){
+
+    document
+      .getElementById(
+        "loginStatus"
+      )
+      .textContent =
+        "Vui lòng nhập đầy đủ";
+
+    return;
+  }
+
+
+  if(!socket ||
+     socket.readyState !==
+     WebSocket.OPEN){
+
+    document
+      .getElementById(
+        "loginStatus"
+      )
+      .textContent =
+      "Đang kết nối server...";
+
+    connect();
+
+    setTimeout(
+      login,
+      1000
+    );
+
+    return;
+  }
+
+
+  socket.send(
+    JSON.stringify({
+
+      type:
+        "login",
+
+      username:
+        user,
+
+      password:
+        pass
+
+    })
+  );
+
+
+  document
+    .getElementById(
+      "loginStatus"
+    )
+    .textContent =
+      "Đang đăng nhập...";
+
+}
+
+
+/* ==================================================
+   CHAT
+================================================== */
+
+function sendMessage(){
+
+  const input =
+    document.getElementById(
+      "messageInput"
+    );
+
+  const text =
+    input.value.trim();
+
+
+  if(!text) return;
+
+
+  if(
+    !socket ||
+    socket.readyState !==
+    WebSocket.OPEN
+  ){
+
+    alert(
+      "Chưa kết nối server"
+    );
+
+    return;
+  }
+
+
+  if(!currentRoom){
+
+    alert(
+      "Hãy vào phòng trước"
+    );
+
+    return;
+  }
+
+
+  socket.send(
+    JSON.stringify({
+
+      type:
+        "chat",
+
+      text:
+        text
+
+    })
+  );
+
+
+  input.value = "";
+
+  input.focus();
+
+}
+
+
+function addMessage(message){
+
+  const box =
+    document.getElementById(
+      "messages"
+    );
+
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.className =
+    "message" +
+    (
+      message.from === username
+        ? " me"
+        : ""
+    );
+
+
+  const name =
+    document.createElement(
+      "div"
+    );
+
+  name.className =
+    "message-name";
+
+  name.textContent =
+    message.from;
+
+
+  const text =
+    document.createElement(
+      "div"
+    );
+
+  text.textContent =
+    message.text;
+
+
+  div.appendChild(name);
+
+  div.appendChild(text);
+
+  box.appendChild(div);
+
+
+  box.scrollTop =
+    box.scrollHeight;
+
+}
+
+
+/* ==================================================
+   VÀO PHÒNG GỌI + CHAT
+================================================== */
+
+async function joinCall(){
+
+  const room =
+    document
+      .getElementById(
+        "roomInput"
+      )
+      .value
+      .trim();
+
+
+  if(!room){
+
+    alert(
+      "Nhập tên phòng"
+    );
+
+    return;
+  }
+
+
+  if(
+    !socket ||
+    socket.readyState !==
+    WebSocket.OPEN
+  ){
+
+    alert(
+      "Chưa kết nối server"
+    );
+
+    return;
+  }
+
+
+  currentRoom =
+    room;
+
+
+  document
+    .getElementById(
+      "callStatus"
+    )
+    .textContent =
+      "Đang vào phòng " +
+      room;
+
+
+  try{
+
+    localStream =
+      await navigator.mediaDevices
+        .getUserMedia({
+          audio:true,
+          video:false
+        });
+
+
+    createPeerConnection();
+
+
+    socket.send(
+      JSON.stringify({
+
+        type:
+          "join",
+
+        room:
+          room
+
+      })
+    );
+
+
+    connectedToCall =
+      true;
+
+
+    document
+      .getElementById(
+        "callStatus"
+      )
+      .textContent =
+        "🟢 Đã vào phòng " +
+        room;
+
+  }catch(error){
+
+    console.error(error);
+
+    document
+      .getElementById(
+        "callStatus"
+      )
+      .textContent =
+        "Không lấy được microphone";
+
+  }
+
+}
+
+
+/* ==================================================
+   WEBRTC
+================================================== */
+
+function createPeerConnection(){
 
   pc =
     new RTCPeerConnection({
@@ -631,38 +1156,50 @@ async function makePC(){
       iceServers:[
         {
           urls:
-          "stun:stun.l.google.com:19302"
+            "stun:stun.l.google.com:19302"
         }
       ]
 
     });
 
 
-  stream
-    .getTracks()
-    .forEach(track => {
+  if(localStream){
 
-      pc.addTrack(
-        track,
-        stream
-      );
+    localStream
+      .getTracks()
+      .forEach(track => {
 
-    });
+        pc.addTrack(
+          track,
+          localStream
+        );
+
+      });
+
+  }
 
 
   pc.onicecandidate =
     event => {
 
-      if(event.candidate){
+      if(
+        event.candidate &&
+        socket &&
+        socket.readyState ===
+        WebSocket.OPEN
+      ){
 
-        signal({
+        socket.send(
+          JSON.stringify({
 
-          type:"candidate",
-          room,
-          candidate:
-            event.candidate
+            type:
+              "candidate",
 
-        });
+            candidate:
+              event.candidate
+
+          })
+        );
 
       }
 
@@ -672,24 +1209,18 @@ async function makePC(){
   pc.ontrack =
     event => {
 
-      let audio =
-        document.getElementById("remote");
-
-      if(!audio){
-
-        audio =
-          document.createElement("audio");
-
-        audio.id = "remote";
-        audio.autoplay = true;
-
-        document.body
-          .appendChild(audio);
-
-      }
+      const audio =
+        document.getElementById(
+          "remoteAudio"
+        );
 
       audio.srcObject =
         event.streams[0];
+
+      audio.play()
+        .catch(
+          () => {}
+        );
 
     };
 
@@ -702,9 +1233,28 @@ async function makePC(){
         "connected"
       ){
 
-        $("callStatus")
+        document
+          .getElementById(
+            "callStatus"
+          )
           .textContent =
-          "📞 Đang gọi";
+            "🟢 Đang gọi";
+
+      }
+
+      if(
+        pc.connectionState ===
+        "disconnected" ||
+        pc.connectionState ===
+        "failed"
+      ){
+
+        document
+          .getElementById(
+            "callStatus"
+          )
+          .textContent =
+            "Cuộc gọi bị ngắt";
 
       }
 
@@ -713,88 +1263,259 @@ async function makePC(){
 }
 
 
-/* =========================
-   MICRO
-========================= */
+async function createOffer(){
 
-$("mic").onclick = () => {
-
-  if(!stream) return;
-
-  const track =
-    stream.getAudioTracks()[0];
-
-  track.enabled =
-    !track.enabled;
-
-  $("mic").textContent =
-    track.enabled
-      ? "🎙️ Tắt mic"
-      : "🔇 Bật mic";
-
-};
+  if(!pc) return;
 
 
-/* =========================
-   KẾT THÚC
-========================= */
+  try{
 
-$("hang").onclick = () => {
+    const offer =
+      await pc.createOffer();
 
-  if(stream){
 
-    stream
-      .getTracks()
-      .forEach(track =>
-        track.stop()
-      );
+    await pc.setLocalDescription(
+      offer
+    );
+
+
+    socket.send(
+      JSON.stringify({
+
+        type:
+          "offer",
+
+        offer:
+          pc.localDescription
+
+      })
+    );
+
+  }catch(error){
+
+    console.error(error);
 
   }
+
+}
+
+
+async function handleWebRTC(data){
+
+  if(
+    data.type !== "offer" &&
+    data.type !== "answer" &&
+    data.type !== "candidate"
+  ){
+
+    return;
+  }
+
+
+  if(!pc){
+
+    createPeerConnection();
+
+  }
+
+
+  try{
+
+    if(
+      data.type ===
+      "offer"
+    ){
+
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(
+          data.offer
+        )
+      );
+
+
+      const answer =
+        await pc.createAnswer();
+
+
+      await pc.setLocalDescription(
+        answer
+      );
+
+
+      socket.send(
+        JSON.stringify({
+
+          type:
+            "answer",
+
+          answer:
+            pc.localDescription
+
+        })
+      );
+
+      return;
+    }
+
+
+    if(
+      data.type ===
+      "answer"
+    ){
+
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(
+          data.answer
+        )
+      );
+
+      return;
+    }
+
+
+    if(
+      data.type ===
+      "candidate"
+    ){
+
+      await pc.addIceCandidate(
+        new RTCIceCandidate(
+          data.candidate
+        )
+      );
+
+    }
+
+  }catch(error){
+
+    console.error(
+      "WebRTC error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   MIC
+================================================== */
+
+function toggleMic(){
+
+  if(!localStream){
+
+    return;
+  }
+
+
+  micEnabled =
+    !micEnabled;
+
+
+  localStream
+    .getAudioTracks()
+    .forEach(
+      track =>
+        track.enabled =
+          micEnabled
+    );
+
+
+  document
+    .getElementById(
+      "callStatus"
+    )
+    .textContent =
+      micEnabled
+        ? "🎙️ Micro đã bật"
+        : "🔇 Micro đã tắt";
+
+}
+
+
+/* ==================================================
+   KẾT THÚC CUỘC GỌI
+================================================== */
+
+function hangup(){
 
   if(pc){
 
     pc.close();
+
     pc = null;
 
   }
 
-  if(ws){
 
-    ws.close();
-    ws = null;
+  if(localStream){
+
+    localStream
+      .getTracks()
+      .forEach(
+        track =>
+          track.stop()
+      );
+
+    localStream =
+      null;
 
   }
 
-  $("join").disabled = false;
-  $("room").disabled = false;
 
-  $("mic").disabled = true;
-  $("hang").disabled = true;
-
-  $("callBox")
-    .classList.add("hidden");
-
-  $("callStatus").textContent =
-    "Chưa kết nối";
-
-};
+  currentRoom =
+    "";
 
 
-/* =========================
+  connectedToCall =
+    false;
+
+
+  document
+    .getElementById(
+      "callStatus"
+    )
+    .textContent =
+      "Đã kết thúc cuộc gọi";
+
+}
+
+
+/* ==================================================
    ĐĂNG XUẤT
-========================= */
+================================================== */
 
-$("logout").onclick = () => {
+function logout(){
 
-  $("hang").click();
+  hangup();
 
-  currentUser = null;
+  username =
+    "";
 
-  showPage("loginPage");
+  currentRoom =
+    "";
 
-};
+  document
+    .getElementById(
+      "messages"
+    )
+    .innerHTML =
+      "";
+
+  showLogin();
+
+}
+
+
+/* ==================================================
+   KHỞI ĐỘNG
+================================================== */
+
+connect();
 
 </script>
 
 </body>
-</html>
+  </html>
